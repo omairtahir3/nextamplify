@@ -1,0 +1,152 @@
+body.album-body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #000;
+  color: #fff;
+}
+
+.albums-container {
+  padding: 2rem;
+  background: linear-gradient(180deg, #450000 0%, #121212 100%);
+  margin-left: 5px;
+  width: 70%;
+  padding-bottom: 1rem;
+  overflow: auto;
+}
+        
+.albums-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+        
+.search-container {
+    position: relative;
+    width: 300px;
+    right: 5rem;
+}
+        
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border-radius: 20px;
+    border: none;
+    background-color: #282828;
+    color: white;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+        
+.search-icon {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #b3b3b3;
+}
+        
+.albums-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    gap: 1rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    overflow-y: visible;
+}
+        
+.album-card {
+    background: #181818;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    color: white;
+    width: 13rem;
+    margin-top: 1.5rem;
+    margin-left: 0.2rem;
+}
+
+
+.album-card:hover {
+    background-color: #2c2c2c;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+        
+.album-image-container {
+    position: relative;
+    margin-bottom: 1rem;
+    width: 13.5rem;
+}
+        
+.album-cover {
+    width: 100%;
+    border-radius: 4px;
+    object-fit: cover;
+}
+        
+.album-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 0.5rem;
+}
+        
+.album-card:hover .album-overlay {
+    opacity: 1;
+}
+        
+.play-button {
+    background-color: #b80000;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+        
+.album-info {
+    min-height: 80px;
+}
+        
+.album-title {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+        
+.album-artist {
+    color: #b3b3b3;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+        
+.album-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #b3b3b3;
+    font-size: 0.75rem;
+}
+
+/* For tablets */
+@media (max-width: 900px) {
+    .albums-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
+
+/* For mobile */
+@media (max-width: 600px) {
+    .albums-grid {
+        grid-template-columns: 1fr;
+    }
+}
