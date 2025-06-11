@@ -20,7 +20,6 @@ export default function Sidebar() {
           <li><Link href="/dashboard/playlists">Playlists</Link></li>
           <li><Link href="/dashboard/albums">Albums</Link></li>
           <li><Link href="/dashboard/artists">Artists</Link></li>
-          <li><Link href="/dashboard/liked">Liked Songs</Link></li>
           <li><Link href="/signin">Logout</Link></li>
         </ul>
       </nav>

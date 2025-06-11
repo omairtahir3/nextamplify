@@ -37,7 +37,13 @@ body.album-body {
     font-size: 1rem;
     font-family: 'Poppins', sans-serif;
 }
-        
+
+.search-input:focus {
+  outline: none;
+  background-color: #383838;
+  box-shadow: 0 0 0 2px #b80000;
+}
+
 .search-icon {
     position: absolute;
     left: 0.5rem;
@@ -78,20 +84,11 @@ body.album-body {
     margin-bottom: 1rem;
     width: 13.5rem;
 }
-        
+     
 .album-cover {
     width: 100%;
     border-radius: 4px;
     object-fit: cover;
-}
-        
-.album-overlay {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    padding: 0.5rem;
 }
         
 .album-card:hover .album-overlay {
@@ -135,6 +132,14 @@ body.album-body {
     gap: 0.5rem;
     color: #b3b3b3;
     font-size: 0.75rem;
+}
+
+.play-button circle {
+  fill: #b80000;
+}
+
+.play-button path {
+  fill: #000;
 }
 
 /* For tablets */

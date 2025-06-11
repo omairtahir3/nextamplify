@@ -1,57 +1,61 @@
-// app/dashboard/albums/[albumId]/page.js
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useEffect, use } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { albums } from '../data/albums';
+import NowPlayingPage from '../../components/NowPlaying/NowPlayingPage';
+import Sidebar from '../../components/Sidebar';
 
-// Helper function to convert duration string to seconds
+// Helper to convert duration string to seconds
 const durationToSeconds = (duration) => {
   const [minutes, seconds] = duration.split(':').map(Number);
   return minutes * 60 + seconds;
 };
 
-// Helper function to format total duration for display
-const formatTotalDuration = (totalSeconds) => {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  
-  if (hours > 0) {
-    return `${hours} hr ${minutes} min`;
-  } else if (minutes > 0) {
-    return `${minutes} min ${seconds} sec`;
-  }
-  return `${seconds} sec`;
-};
+// Helper to create unique song IDs
+const createUniqueSongId = (albumId, trackId) => `${albumId}-${trackId}`;
 
 export default function AlbumPage({ params }) {
-  const router = useRouter();
-  const [currentTrack, setCurrentTrack] = useState(null);
-  const album = albums.find(a => a.id === parseInt(params.albumId));
-
-  // Calculate total album duration
-  const totalDuration = useMemo(() => {
-    if (!album) return '0:00';
-    
-    const totalSeconds = album.tracks.reduce((total, track) => {
-      return total + durationToSeconds(track.duration);
-    }, 0);
-    
-    return formatTotalDuration(totalSeconds);
+  // Unwrap the params promise using use()
+  const resolvedParams = use(params);
+  const albumId = resolvedParams.albumId;
+  
+  const album = albums.find(a => a.id === parseInt(albumId));
+  const [queue, setQueue] = useState([]);
+  
+  // Set document title to album name
+  useEffect(() => {
+    if (album) {
+      document.title = `Amplify - ${album.title}`;
+    } else {
+      document.title = 'Amplify - Album';
+    }
   }, [album]);
 
-  if (!album) {
-    router.push('/dashboard/albums');
-    return null;
-  }
+  // Prepare tracks with actualDuration and uniqueId
+  const albumTracks = album ? album.tracks.map(track => ({
+    ...track,
+    uniqueId: createUniqueSongId(album.id, track.id),
+    artist: album.artist,
+    cover: album.cover,
+    actualDuration: durationToSeconds(track.duration)
+  })) : [];
 
-  const handleTrackSelect = (track) => {
-    setCurrentTrack(track);
+  // Calculate total album duration
+  const totalDuration = album ? formatTotalDuration(
+    albumTracks.reduce((total, track) => 
+      total + track.actualDuration, 0)
+  ) : '0:00';
+
+  // Play track immediately
+  const playTrack = (track) => {
+    window.dispatchEvent(new CustomEvent('playTrack', { detail: track }));
   };
+
+  if (!album) return <div className="loading">Loading album...</div>;
 
   return (
     <div className="album-content">
+      <Sidebar />
       <div className="album-header">
         <div className="album-art">
           <Image
@@ -82,19 +86,39 @@ export default function AlbumPage({ params }) {
           <div>Duration</div>
         </div>
         
-        {album.tracks.map((track) => (
+        {albumTracks.map((track) => (
           <div 
-            key={track.id} 
-            className={`track-item ${currentTrack?.id === track.id ? 'active' : ''}`}
-            onClick={() => handleTrackSelect(track)}
+            key={track.uniqueId} 
+            className="track-item"
           >
             <div className="track-number">{track.id}</div>
             <div className="track-title">{track.title}</div>
             <div className="track-duration">{track.duration}</div>
-            <i className="fas fa-play track-play-icon"></i>
+            <div className="track-actions">
+              <i className="fas fa-play track-play-icon" onClick={() => playTrack(track)}></i>
+            </div>
           </div>
         ))}
       </div>
+      
+      <NowPlayingPage 
+        showRecentlyPlayed={false}
+        initialQueue={queue}
+      />
     </div>
   );
+}
+
+// Format total duration
+function formatTotalDuration(totalSeconds) {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  
+  if (hours > 0) {
+    return `${hours} hr ${minutes} min`;
+  } else if (minutes > 0) {
+    return `${minutes} min ${seconds} sec`;
+  }
+  return `${seconds} sec`;
 }

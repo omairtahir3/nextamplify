@@ -1,12 +1,17 @@
 'use client';
 import Image from 'next/image';
-export default function RecentlyPlayed({ recentlyPlayed }) {
+
+export default function RecentlyPlayed({ recentlyPlayed, onTrackClick }) {
   return (
     <section className="section">
       <h2 className="section-heading">Recently Played</h2>
       <div className="card-grid">
         {recentlyPlayed.map((track) => (
-          <div key={track.id} className="music-card">
+          <div 
+            key={track.id} 
+            className="music-card"
+            onClick={() => onTrackClick(track)}
+          >
             <Image
               src={track.cover}
               alt={track.title}

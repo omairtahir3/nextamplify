@@ -1,43 +1,9 @@
 'use client'
+import { useState } from 'react';
 import Image from 'next/image';
-import { useState, useCallback } from 'react';
-// Corrected import path - make sure this matches your actual file structure
 import NowPlayingPage from './components/NowPlaying/NowPlayingPage';
-import RecentlyPlayed from './components/NowPlaying/RecentlyPlayed';
-
-const initialRecentlyPlayed = [
-  {
-    id: 1,
-    cover: 'https://i.scdn.co/image/ab67616d0000b273e6f407c7f3a0ec98845e4431',
-    title: 'Peaches',
-    artist: 'Justin Bieber'
-  },
-  {
-    id: 2,
-    cover: 'https://i.scdn.co/image/ab67616d0000b273e0450ba3fd83cf9048446477',
-    title: 'Starboy',
-    artist: 'The Weeknd'
-  },
-  {
-    id: 3,
-    cover: 'https://i.scdn.co/image/ab67616d0000b273d28d2ebdedb220e479743797',
-    title: 'Money Trees',
-    artist: 'Kendrick Lamar'
-  },
-  {
-    id: 4,
-    cover: 'https://i.scdn.co/image/ab67616d0000b273bb54dde68cd23e2a268ae0f5',
-    title: 'Midnights',
-    artist: 'Taylor Swift'
-  },
-  {
-    id: 5,
-    cover: 'https://i.scdn.co/image/ab67616d0000b2732a038d3bf875d23e4aeaa84e',
-    title: 'Getting Older',
-    artist: 'Billie Eilish'
-  }
-];
-
+import Sidebar from './components/Sidebar';
+// More Songs data
 const MoreSongs = [
   {
     id: 1,
@@ -72,38 +38,18 @@ const MoreSongs = [
 ];
 
 export default function DashboardPage() {
-  const [recentlyPlayed, setRecentlyPlayed] = useState(initialRecentlyPlayed);
-  
-  const addToRecentlyPlayed = useCallback((track) => {
-    setRecentlyPlayed(prev => {
-      const normalizedTrack = {
-        id: track.id,
-        cover: track.cover,
-        title: track.title,
-        artist: track.artist
-      };
-    
-      // Create new array without duplicates
-      const filtered = prev.filter(t => t.id !== normalizedTrack.id);
-      const newList = [normalizedTrack, ...filtered].slice(0, 8);
-      return newList;
-    });
-  }, []);
-
-  console.log('🎵 PARENT: Rendering DashboardPage, addToRecentlyPlayed function:', typeof addToRecentlyPlayed); // Debug log
-
   return (
     <div className="main-wrapper">
+      <Sidebar />
       <main className="main">
         <h1 className="welcome-heading">Welcome!</h1>
-
-        {/* Pass the addToRecentlyPlayed function to NowPlayingPage */}
-        <NowPlayingPage addToRecentlyPlayed={addToRecentlyPlayed} />
-        <RecentlyPlayed recentlyPlayed={recentlyPlayed} />
-
+        
+        {/* NowPlayingPage handles its own state */}
+        <NowPlayingPage showRecentlyPlayed= {true} />
+      
         {/* More Songs Section */}
         <section className="section">
-          <h2 className="section-heading">More Songs</h2>
+          <h2 className="section-heading">More Albums</h2>
           <div className="card-grid small-cards">
             {MoreSongs.map((mix) => (
               <div key={mix.id} className="music-card">
@@ -113,6 +59,9 @@ export default function DashboardPage() {
                   width={150}
                   height={150}
                   className="mix-cover"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/150';
+                  }}
                 />
                 <p className="mix-title">{mix.title}</p>
                 <p className="mix-description">{mix.description}</p>

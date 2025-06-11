@@ -97,12 +97,11 @@ body.dashboard-body {
   font-weight: 700;
 }
 
-/* Card Grid */
+/* Update the card grid */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 1rem;
-  padding: 1rem 0;
 }
 
 .music-card {
@@ -110,24 +109,26 @@ body.dashboard-body {
   padding: 0.8rem;
   border-radius: 8px;
   transition: all 0.3s;
-  position: relative;
   overflow: hidden;
+  position: static;
 }
 
 .music-card:hover {
   background-color: #2c2c2c;
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
 }
 
 .music-card::before {
   content: "";
-  position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 4px; 
+  width: 13rem;
   background-color: #b80000;
+  position: static;
 }
 
 .music-card img {
@@ -222,7 +223,7 @@ body.dashboard-body {
   gap: 16px;
 }
 
-.artist-image {
+.artist-section-image {
   width: 72px;
   height: 72px;
   border-radius: 50%;

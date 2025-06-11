@@ -10,7 +10,7 @@ export default function ArtistInfo({ artist }) {
           alt={artist.name}
           width={150}
           height={150}
-          className="artist-image"
+          className="artist-section-image"
         />
         <div className="artist-stats">
           <h2>{artist.name}</h2>
