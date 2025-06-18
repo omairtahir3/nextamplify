@@ -1,4 +1,4 @@
-// app/layout.js
+// app/dashboard/albums/layout.js
 import { Poppins } from 'next/font/google';
 import './globals.css';
 
@@ -10,15 +10,13 @@ const poppins = Poppins({
 
 export const metadata = {
   title: 'Amplify - Albums',
-  description: 'Log in to your Amplify account',
+  description: 'Browse Albums on Amplify',
 };
 
-export default function RootLayout({ children }) {
+export default function AlbumsLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
-      <body className="album-body">
-        {children}
-      </body>
-    </html>
+    <div className={`${poppins.variable} albums-body`}>
+      {children}
+    </div>
   );
 }

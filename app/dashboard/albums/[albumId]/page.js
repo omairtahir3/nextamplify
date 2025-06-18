@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { albums } from '../data/albums';
 import NowPlayingPage from '../../components/NowPlaying/NowPlayingPage';
 import Sidebar from '../../components/Sidebar';
-
 // Helper to convert duration string to seconds
 const durationToSeconds = (duration) => {
   const [minutes, seconds] = duration.split(':').map(Number);
@@ -54,22 +53,22 @@ export default function AlbumPage({ params }) {
   if (!album) return <div className="loading">Loading album...</div>;
 
   return (
-    <div className="album-content">
+    <div className="album-detail-content">
       <Sidebar />
-      <div className="album-header">
-        <div className="album-art">
+      <div className="album-detail-header">
+        <div className="album-detail-art">
           <Image
             src={album.cover}
             alt={album.title}
             width={300}
             height={300}
-            className="album-cover"
+            className="album-detail-cover"
           />
         </div>
-        <div className="album-info">
-          <h1 className="album-title">{album.title}</h1>
-          <p className="album-artist">{album.artist}</p>
-          <div className="album-meta">
+        <div className="album-detail-info">
+          <h1 className="album-detail-title">{album.title}</h1>
+          <p className="album-detail-artist">{album.artist}</p>
+          <div className="album-detail-meta">
             <span>{album.year}</span>
             <span className="divider"></span>
             <span>{album.tracks.length} songs</span>

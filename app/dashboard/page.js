@@ -1,43 +1,30 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import NowPlayingPage from './components/NowPlaying/NowPlayingPage';
 import Sidebar from './components/Sidebar';
-// More Songs data
-const MoreSongs = [
-  {
-    id: 1,
-    cover: 'https://pickasso.spotifycdn.com/image/ab67c0de0000deef/dt/v1/img/daily/1/ab6761610000e5ebb99cacf8acd5378206767261/en',
-    title: 'Lana Del Rey Mix',
-    description: 'Your daily mix'
-  },
-  {
-    id: 2,
-    cover: 'https://pickasso.spotifycdn.com/image/ab67c0de0000deef/dt/v1/img/daily/2/ab6761610000e5ebc36dd9eb55fb0db4911f25dd/en',
-    title: 'Bruno Mars Mix',
-    description: 'Your daily mix'
-  },
-  {
-    id: 3,
-    cover: 'https://pickasso.spotifycdn.com/image/ab67c0de0000deef/dt/v1/img/daily/3/ab6761610000e5ebe672b5f553298dcdccb0e676/en',
-    title: 'Taylor Swift Mix',
-    description: 'Your daily mix'
-  },
-  {
-    id: 4,
-    cover: 'https://pickasso.spotifycdn.com/image/ab67c0de0000deef/dt/v1/img/daily/4/ab6761610000e5eb8ae7f2aaa9817a704a87ea36/en',
-    title: 'Sabrina Carpenter Mix',
-    description: 'Your daily mix'
-  },
-  {
-    id: 5,
-    cover: 'https://pickasso.spotifycdn.com/image/ab67c0de0000deef/dt/v1/img/daily/5/ab6761610000e5eb17af45f97f547e588f3903f6/en',
-    title: 'PEDRO SAMPAIO Mix',
-    description: 'Your daily mix'
-  }
-];
+import { albums } from './albums/data/albums'; // Import albums data
 
 export default function DashboardPage() {
+  const [randomAlbums, setRandomAlbums] = useState([]);
+  const router = useRouter();
+
+  // Get 5 random albums
+  useEffect(() => {
+    const getRandomAlbums = (count = 5) => {
+      const shuffled = [...albums].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    };
+    
+    setRandomAlbums(getRandomAlbums());
+  }, []);
+
+  // Handle album click
+  const handleAlbumClick = (albumId) => {
+    router.push(`/dashboard/albums/${albumId}`);
+  };
+
   return (
     <div className="main-wrapper">
       <Sidebar />
@@ -45,31 +32,46 @@ export default function DashboardPage() {
         <h1 className="welcome-heading">Welcome!</h1>
         
         {/* NowPlayingPage handles its own state */}
-        <NowPlayingPage showRecentlyPlayed= {true} />
+        <NowPlayingPage showRecentlyPlayed={true} />
       
-        {/* More Songs Section */}
+        {/* More Albums Section */}
         <section className="section">
           <h2 className="section-heading">More Albums</h2>
           <div className="card-grid small-cards">
-            {MoreSongs.map((mix) => (
-              <div key={mix.id} className="music-card">
+            {randomAlbums.map((album) => (
+              <div 
+                key={album.id} 
+                className="music-card clickable-card"
+                onClick={() => handleAlbumClick(album.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleAlbumClick(album.id);
+                  }
+                }}
+              >
                 <Image
-                  src={mix.cover}
-                  alt={mix.title}
+                  src={album.cover}
+                  alt={album.title}
                   width={150}
                   height={150}
-                  className="mix-cover"
+                  className="album-cover"
                   onError={(e) => {
                     e.target.src = 'https://via.placeholder.com/150';
                   }}
                 />
-                <p className="mix-title">{mix.title}</p>
-                <p className="mix-description">{mix.description}</p>
+                <div className="album-info">
+                  <p className="album-title">{album.title}</p>
+                  <p className="album-artist">{album.artist}</p>
+                  <p className="album-tracks">{album.tracks.length} tracks</p>
+                </div>
               </div>
             ))}
           </div>
         </section>
       </main>
     </div>
-  );
-}
+  )
+};

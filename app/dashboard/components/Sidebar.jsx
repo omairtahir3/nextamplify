@@ -1,7 +1,19 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
+  const router = useRouter();
+
+const handleLogout = async () => {
+  await fetch('/api/logout');
+  if (typeof window !== 'undefined') {
+    window.location.replace('/signin');
+  }
+};
+
   return (
     <aside className="sidebar">
       <div className="logo-container">
@@ -20,7 +32,9 @@ export default function Sidebar() {
           <li><Link href="/dashboard/playlists">Playlists</Link></li>
           <li><Link href="/dashboard/albums">Albums</Link></li>
           <li><Link href="/dashboard/artists">Artists</Link></li>
-          <li><Link href="/signin">Logout</Link></li>
+          <li>
+            <a href="#" onClick={handleLogout} className="logout-link">Logout</a>
+          </li>
         </ul>
       </nav>
     </aside>

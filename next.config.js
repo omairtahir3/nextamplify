@@ -62,7 +62,8 @@ module.exports = {
         protocol: 'https',
         hostname: '*.gstatic.com',
         pathname: '/**',
-      }
+      },
+      
     ],
   }
 }

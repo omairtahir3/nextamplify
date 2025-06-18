@@ -141,48 +141,44 @@ export default function Home() {
               <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="/explore">Explore</Link>
+              <Link href="/signup">Explore</Link>
             </li>
             <li>
-              <Link href="/playlists">Playlists</Link>
+              <Link href="/signup">Playlists</Link>
             </li>
             <li>
-              <Link href="/profile">Profile</Link>
+              <Link href="/signup">Profile</Link>
             </li>
           </ul>
         </div>
 
-        <div className="search">
-          <form id="search-bar">
-            <div className="input">
-              <i className="fa-solid fa-magnifying-glass"></i>
-              <input
-                type="search"
-                id="search"
-                placeholder="What do you want to play?"
-                required
-              />
-            </div>
-          </form>
+        <div className="auth-buttons">
+          <Link href="/signin" className="sign-in">Sign In</Link>
+          <Link href="/signup" className="sign-up">Sign Up</Link>
         </div>
-
-        <Link href="/login" className="sign-in">Sign In</Link>
       </nav>
       {/* Hero Section */}
       <section className="hero">
         <h2>Discover Your Next Favorite Song</h2>
         <p>Stream millions of songs and create your own playlists.</p>
-        <button className="cta">Get Premium</button>
+        <div className="premium-btn">
+          <Link href="/premium">
+            <button className="cta">Get Premium</button>
+          </Link>
+        </div>
         <div className="hero-background"></div>
       </section>
 
       {/* Trending Songs */}
-
       <div className="main-section">
         {/* Trending Songs Section */}
-        <Section title="Trending Songs" link="#">
+        <Section title="Trending Songs" link="signup">
           {trendingSongs.map((song) => (
-            <div className="card" key={song.id}>
+            <Link 
+              className="card" 
+              key={song.id}
+              href="/signup"
+            >
               <Image
                 src={song.cover}
                 alt="Song Cover"
@@ -192,14 +188,18 @@ export default function Home() {
               />
               <h4>{song.title}</h4>
               <p>{song.artist}</p>
-            </div>
+            </Link>
           ))}
         </Section>
 
         {/* Playlists Section */}
-        <Section title="Top Playlists" link="#">
+        <Section title="Top Playlists" link="/signup">
           {playlists.map((playlist) => (
-            <div className="card" key={playlist.id}>
+            <Link 
+              key={playlist.id} 
+              href="/signup" 
+              className="card"
+            >
               <Image
                 src={playlist.cover}
                 alt="Playlist Cover"
@@ -208,14 +208,18 @@ export default function Home() {
                 className="cover-image"
               />
               <h4>{playlist.title}</h4>
-            </div>
+            </Link>
           ))}
         </Section>
 
         {/* Artists Section */}
-        <Section title="Popular Artists" link="#">
+        <Section title="Popular Artists" link="/signup">
           {artists.map((artist) => (
-            <div className="card" key={artist.id}>
+            <Link 
+              className="card" 
+              key={artist.id} 
+              href="/signup"
+            >
               <Image
                 src={artist.cover}
                 alt="Artist Image"
@@ -224,12 +228,12 @@ export default function Home() {
                 className="cover-image"
               />
               <h4>{artist.name}</h4>
-            </div>
+            </Link>
           ))}
         </Section>
 
         {/* Albums Section */}
-        <Section title="Top Albums" link="#">
+        <Section title="Top Albums" link="signup">
           {albums.map((album) => (
             <div className="card" key={album.id}>
               <Image
@@ -254,7 +258,7 @@ function Section({ title, link, children }) {
     <section className="section">
       <div className="heading">
         <h3>{title}</h3>
-        <Link href="/showall">Show all</Link>
+        <Link href="/signup">Show all</Link>
       </div>
       <div className="grid">{children}</div>
     </section>

@@ -1,5 +1,6 @@
 import './globals.css';
 import { Poppins, Montserrat, Bebas_Neue, Playfair_Display } from 'next/font/google';
+
 // Configure Poppins
 const poppins = Poppins({
   weight: '600',
@@ -35,10 +36,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${poppins.variable} ${montserrat.variable} ${bebas.variable} ${playfair.variable}`}>
-      <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-      </head>
+    <html lang="en">
       <body>
         {children}
       </body>

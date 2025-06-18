@@ -17,7 +17,7 @@
   box-sizing: border-box;
   overflow-y: auto;
   width: 100%; /* Changed from max-width to width */
-  margin-left: -10rem; /* Added - account for sidebar */
+  margin-left: -10rem; 
 }
 
 .artists-header {
@@ -37,6 +37,7 @@
   padding: 2rem;
   border-radius: 8px;
   box-sizing: border-box;
+  margin-bottom: 10rem;
 }
 
 .artist-card {
@@ -113,9 +114,6 @@
   font-size: 0.75rem;
   color: #b3b3b3;
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 
 .search-input {

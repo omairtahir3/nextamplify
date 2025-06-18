@@ -118,6 +118,7 @@ body.dashboard-body {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   cursor: pointer;
+  z-index: 50; /* Higher z-index on hover, but still below now-playing bar */
 }
 
 .music-card::before {
@@ -171,6 +172,7 @@ body.dashboard-body {
   width: 20%;
   scrollbar-width: none; 
   -ms-overflow-style: none; 
+  z-index: 200;
 }
 
 .now-playing-track {

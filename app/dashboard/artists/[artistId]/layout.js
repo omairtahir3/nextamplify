@@ -14,7 +14,7 @@ export const metadata = {
 
 export default function ArtistDetailLayout({ children }) {
   return (
-    <div className={`${poppins.variable} artist-body`}>
+    <div className={`${poppins.variable} artist-detail-body`}>
       {children}
     </div>
   );

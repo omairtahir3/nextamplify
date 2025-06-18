@@ -1,6 +1,7 @@
 // app/layout.js
 import { Poppins } from 'next/font/google';
 import './globals.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 const poppins = Poppins({
   weight: ['400', '500', '600'],
   subsets: ['latin'],
@@ -12,14 +13,16 @@ export const metadata = {
   description: 'Log in to your Amplify account',
 };
 
-export default function RootLayout({ children }) {
+export default function DashboardLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
-      <body className="dashboard-body">
-        <div className="dashboard-container">
-          {children}
-        </div>
-      </body>
-    </html>
+    <div className={`dashboard-body ${poppins.variable}`}>
+      <div className="dashboard-container">
+        <link
+          rel="stylesheet"
+           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        {children}
+      </div>
+    </div>
   );
 }

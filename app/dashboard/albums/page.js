@@ -61,7 +61,7 @@ export default function AlbumsPage() {
                       console.log('Play album:', album.title);
                     }}
                   >
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg className = "album-detail-playbtn" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <circle cx="12" cy="12" r="11" strokeWidth="1"/>
                       <path d="M9 7L17 12L9 17V7Z"/>
                     </svg>
