@@ -169,6 +169,7 @@
   font-size: 1.12rem;
   display: flex;
   align-items: center;
+  margin-top:1.5rem;
 }
 
 .track-item.active .track-title {

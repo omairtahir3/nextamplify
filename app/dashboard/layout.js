@@ -9,7 +9,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: 'Amplify - Playlists',
+  title: 'Amplify - Home',
   description: 'Log in to your Amplify account',
 };
 
@@ -17,10 +17,6 @@ export default function DashboardLayout({ children }) {
   return (
     <div className={`dashboard-body ${poppins.variable}`}>
       <div className="dashboard-container">
-        <link
-          rel="stylesheet"
-           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-        />
         {children}
       </div>
     </div>

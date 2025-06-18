@@ -1,18 +1,35 @@
-// app/dashboard/artists/page.js
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { artists } from './data/artists';
 import NowPlayingPage from '../components/NowPlaying/NowPlayingPage';
-import Sidebar  from '../components/Sidebar';
+import Sidebar from '../components/Sidebar';
+
 export default function ArtistsPage() {
   const [searchQuery, setSearchQuery] = useState('');
-     
-  const filteredArtists = artists.filter(artist =>
+  const [artists, setArtists] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArtists = async () => {
+      try {
+        const res = await fetch('/api/artists');
+        const data = await res.json();
+        setArtists(data);
+      } catch (error) {
+        console.error('Failed to fetch artists:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArtists();
+  }, []);
+
+  const filteredArtists = artists.filter((artist) =>
     artist.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
+  console.log(artists);
   return (
     <div className="dashboard-container">
       <Sidebar />
@@ -32,37 +49,39 @@ export default function ArtistsPage() {
             </span>
           </div>
         </div>
-                
-        <div className="artists-grid">
-          {filteredArtists.map((artist) => (
-            <Link 
-              key={artist.id}
-              href={`/dashboard/artists/${artist.id}`}
-              className="artist-card"
-            >
-              <div className="artist-image-container">
-                <Image
-                  src={artist.image}
-                  alt={artist.name}
-                  width={200}
-                  height={200}
-                  className="artist-image"
-                />
-              </div>
-                            
-              <div className="artist-info">
-                <h3 className="artist-name">{artist.name}</h3>
-                <p className="artist-followers">{artist.followers} followers</p>
-                <div className="artist-genres">
-                  {artist.genres.join(' • ')}
+
+        {loading ? (
+          <p>Loading artists...</p>
+        ) : (
+          <div className="artists-grid">
+            {filteredArtists.map((artist) => (
+              <Link
+                key={artist._id}
+                href={`/dashboard/artists/${artist._id}`}
+                className="artist-card"
+              >
+                <div className="artist-image-container">
+                  <Image
+                    src={artist.image}
+                    alt={artist.name}
+                    width={200}
+                    height={200}
+                    className="artist-image"
+                  />
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+
+                <div className="artist-info">
+                  <h3 className="artist-name">{artist.name}</h3>
+                  <div className="artist-genres">
+                    {artist.genres?.join(' • ')}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
-      
-      {/* Add NowPlayingPage without RecentlyPlayed section */}
+
       <NowPlayingPage showRecentlyPlayed={false} />
     </div>
   );

@@ -2,7 +2,7 @@ export const albums = [
   {
     id: 1,
     title: "Justice",
-    artist: "Justin Bieber",
+    artist: 1,
     cover: "https://i.scdn.co/image/ab67616d0000b273e6f407c7f3a0ec98845e4431",
     year: 2021,
     tracks: [
@@ -27,7 +27,7 @@ export const albums = [
   {
     id: 2,
     title: "Starboy",
-    artist: "The Weeknd",
+    artist: 2,
     cover: "https://i.scdn.co/image/ab67616d0000b273e0450ba3fd83cf9048446477",
     year: 2016,
     tracks: [
@@ -54,7 +54,7 @@ export const albums = [
   {
     id: 3,
     title: "good kid, m.A.A.d city",
-    artist: "Kendrick Lamar",
+    artist: 3,
     cover: "https://i.scdn.co/image/ab67616d00001e02d58e537cea05c2156792c53d",
     year: 2012,
     tracks: [
@@ -75,7 +75,7 @@ export const albums = [
   {
     id: 4,
     title: "Hurry Up Tomorrow",
-    artist: "The Weeknd",
+    artist: 2,
     cover: "https://i.scdn.co/image/ab67616d0000b273982320da137d0de34410df61",
     year: 2023,
     tracks: [
@@ -94,7 +94,7 @@ export const albums = [
   {
     id: 5,
     title: "SOS",
-    artist: "SZA",
+    artist: 4,
     cover: "https://i.scdn.co/image/ab67616d0000b27370dbc9f47669d120ad874ec1",
     year: 2022,
     tracks: [
@@ -115,7 +115,7 @@ export const albums = [
   {
     id: 6,
     title: "Un Verano Sin Ti",
-    artist: "Bad Bunny",
+    artist: 5,
     cover: "https://i.scdn.co/image/ab67616d0000b27349d694203245f241a1bcaa72",
     year: 2022,
     tracks: [
@@ -135,7 +135,7 @@ export const albums = [
   {
     id: 7,
     title: "Midnights",
-    artist: "Taylor Swift",
+    artist: 6,
     cover: "https://i.scdn.co/image/ab67616d0000b273bb54dde68cd23e2a268ae0f5",
     year: 2022,
     tracks: [
@@ -160,7 +160,7 @@ export const albums = [
   {
     id: 8,
     title: "Dawn FM",
-    artist: "The Weeknd",
+    artist: 2,
     cover: "https://i.scdn.co/image/ab67616d0000b2734ab2520c2c77a1d66b9ee21d",
     year: 2022,
     tracks: [
@@ -184,7 +184,7 @@ export const albums = [
   {
     id: 9,
     title: "Planet Her",
-    artist: "Doja Cat",
+    artist: 7,
     cover: "https://i.scdn.co/image/ab67616d0000b273a9f6c04ba168640b48aa5795",
     year: 2021,
     tracks: [
@@ -205,7 +205,7 @@ export const albums = [
   {
     id: 10,
     title: "Happier Than Ever",
-    artist: "Billie Eilish",
+    artist: 8,
     cover: "https://i.scdn.co/image/ab67616d0000b2732a038d3bf875d23e4aeaa84e",
     year: 2021,
     tracks: [

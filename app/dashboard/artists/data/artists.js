@@ -5,7 +5,6 @@ export const artists = [
     name: "Justin Bieber",
     image: "https://i.scdn.co/image/ab6761610000e5eb8ae7f2aaa9817a704a87ea36",
     albums: [1],
-    followers: "85.4M",
     genres: ["Pop", "R&B"],
     description: "Canadian singer-songwriter who became a global sensation as a teenager. Known for hits like 'Baby' and 'Sorry', Bieber has evolved from a teen pop star to a mature artist blending pop, R&B, and electronic influences."
   },
@@ -14,7 +13,6 @@ export const artists = [
     name: "The Weeknd",
     image: "https://i.scdn.co/image/ab6761610000e5eb9e528993a2820267b97f6aae",
     albums: [2 , 4 , 8],
-    followers: "62.1M",
     genres: ["R&B", "Pop"],
     description: "Canadian singer-songwriter known for his atmospheric blend of R&B, pop, and electronic music. With hits like 'Blinding Lights' and 'Starboy', he's become one of the defining voices of contemporary R&B with his distinctive falsetto."
   },
@@ -23,7 +21,6 @@ export const artists = [
     name: "Kendrick Lamar",
     image: "https://i.scdn.co/image/ab6761610000e5eb437b9e2a82505b3d93ff1022",
     albums: [3],
-    followers: "32.7M",
     genres: ["Hip-Hop", "Rap"],
     description: "Pulitzer Prize-winning rapper and songwriter from Compton, California. Known for his intricate lyricism, conceptual albums, and socially conscious themes. His groundbreaking albums have redefined modern hip-hop."
   },
@@ -32,7 +29,6 @@ export const artists = [
     name: "SZA (Solána Imani)",
     image: "https://i.scdn.co/image/ab67616d00001e021882add8fd275c04e322027d",
     albums: [5],
-    followers: "28.9M",
     genres: ["R&B", "Alternative R&B"],
     description: "American singer-songwriter known for her genre-blending style that merges R&B, soul, hip-hop, and indie influences. With her vulnerable lyrics and ethereal vocals, she's become a defining voice in contemporary R&B."
   },
@@ -41,7 +37,6 @@ export const artists = [
     name: "Bad Bunny",
     image: "https://i.scdn.co/image/ab6761610000e5eb744a4243fb6cc938011a98f4",
     albums: [6],
-    followers: "52.3M",
     genres: ["Reggaeton", "Latin"],
     description: "Puerto Rican rapper, singer, and songwriter who has become the most streamed artist globally. Known for his innovative approach to reggaeton and Latin trap, he's revolutionized Latin music and brought it to global audiences."
   },
@@ -50,7 +45,6 @@ export const artists = [
     name: "Taylor Swift",
     image: "https://i.scdn.co/image/ab6761610000e5ebe672b5f553298dcdccb0e676",
     albums: [7],
-    followers: "98.2M",
     genres: ["Pop", "Country"],
     description: "American singer-songwriter who evolved from country prodigy to global pop superstar. Known for her narrative songwriting that explores personal experiences, she's one of the most influential artists of her generation."
   },
@@ -59,7 +53,6 @@ export const artists = [
     name: "Doja Cat",
     image: "https://i.scdn.co/image/ab6761610000e5ebe94f88ff74ae4ddcab961f97",
     albums: [9],
-    followers: "42.5M",
     genres: ["Pop", "Rap"],
     description: "American rapper, singer, and songwriter known for her versatile style that blends pop, R&B, hip-hop, and electronic music. Gained fame through viral hits and is celebrated for her charismatic persona and genre-blending approach."
   },
@@ -68,7 +61,6 @@ export const artists = [
     name: "Billie Eilish",
     image: "https://i.scdn.co/image/ab67616d00001e0250a3147b4edd7701a876c6ce",
     albums: [10],
-    followers: "67.8M",
     genres: ["Pop", "Alternative"],
     description: "American singer-songwriter who rose to fame as a teenager with her distinctive whisper vocals and dark pop sound. Known for her genre-defying music and avant-garde aesthetics, she's become a voice for Gen Z."
   }
