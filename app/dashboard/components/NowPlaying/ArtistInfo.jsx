@@ -1,5 +1,4 @@
-'use client'; 
-
+'use client';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -9,9 +8,15 @@ export default function ArtistInfo({ artist }) {
   if (!artist) return null;
 
   const handleArtistClick = () => {
-    if (artist._id || artist.id) {
-      router.push(`/dashboard/artists/${artist._id || artist.id}`);
+    const artistId = artist._id || artist.id;
+    
+    if (!artistId) {
+      console.error('No artist ID found');
+      return;
     }
+
+    console.log('Navigating to artist ID:', artistId); // Debug log
+    router.push(`/dashboard/artists/${artistId}`);
   };
 
   return (
@@ -21,6 +26,9 @@ export default function ArtistInfo({ artist }) {
           className="artist-image-wrapper"
           onClick={handleArtistClick}
           style={{ cursor: 'pointer' }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && handleArtistClick()}
         >
           <Image
             src={artist.image || '/default-artist.jpg'}

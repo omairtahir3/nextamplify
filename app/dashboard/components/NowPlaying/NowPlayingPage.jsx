@@ -248,6 +248,7 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
     const artist = artists.find(a => a.name === primaryArtistName);
     
     return artist ? {
+      id: artist._id,
       image: artist.image || currentTrack.cover || '/default-cover.jpg',
       name: String(artist.name || 'Unknown Artist'),
       followers: artist.followers ? `${artist.followers} followers` : '',
