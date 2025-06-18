@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,11 +14,13 @@ export default function ArtistPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Unwrap the params promise
+  const unwrappedParams = use(params);
+  const artistId = unwrappedParams?.artistId;
+
   useEffect(() => {
     async function fetchArtistAndAlbums() {
       try {
-        const artistId = params?.artistId;
-        
         if (!artistId) {
           setError('No artist ID provided');
           setLoading(false);
@@ -55,7 +57,7 @@ export default function ArtistPage({ params }) {
     }
 
     fetchArtistAndAlbums();
-  }, [params, router]);
+  }, [artistId, router]);
 
   // Handle loading state
   if (loading) {

@@ -1,6 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, use } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import Sidebar from '../../components/Sidebar';
 import NowPlayingPage from '../../components/NowPlaying/NowPlayingPage';
@@ -26,16 +26,17 @@ function formatTotalDuration(totalSeconds) {
   return `${seconds} sec`;
 }
 
-export default function AlbumPage({ params }) {
+export default function AlbumPage({ params}) {
   const router = useRouter();
-  const albumId = params.albumId;
+  const unwrappedParams = use(params);
+  const albumId = unwrappedParams?.albumId;
+
   const [album, setAlbum] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Fetch album data
-// In your AlbumPage component
   useEffect(() => {
     const fetchAlbumData = async () => {
       try {
@@ -79,30 +80,21 @@ export default function AlbumPage({ params }) {
 
   // Play track function
   const playTrack = (track) => {
+    if (!album) return;
+    
+    // Ensure artist is always a string, not an object
+    const artistName = typeof album.artist === 'string' 
+      ? album.artist 
+      : album.artist?.name || 'Unknown Artist';
+    
     window.dispatchEvent(new CustomEvent('playTrack', { 
       detail: {
         ...track,
-        artist: album.artist?.name || 'Unknown Artist',
-        cover: album.cover
+        artist: artistName,
+        cover: album.cover,
+        albumTitle: album.title || 'Unknown Album',
+        albumId: album._id
       }
-    }));
-    setIsPlaying(true);
-  };
-
-  // Play all tracks
-  const playAllTracks = () => {
-    if (!album?.tracks?.length) return;
-    
-    const fullQueue = album.tracks.map(track => ({
-      ...track,
-      uniqueId: createUniqueSongId(album._id, track._id),
-      artist: album.artist?.name || 'Unknown Artist',
-      cover: album.cover,
-      actualDuration: durationToSeconds(track.duration),
-    }));
-
-    window.dispatchEvent(new CustomEvent('playMultiple', { 
-      detail: fullQueue 
     }));
     setIsPlaying(true);
   };
@@ -155,14 +147,23 @@ export default function AlbumPage({ params }) {
     );
   }
 
-  // Prepare tracks data
-  const albumTracks = album.tracks.map((track, index) => ({
-    ...track,
-    uniqueId: createUniqueSongId(album._id, track._id),
-    artist: album.artist?.name || 'Unknown Artist',
-    cover: album.cover,
-    actualDuration: durationToSeconds(track.duration),
-  }));
+  // Prepare tracks data with safety checks
+  const albumTracks = (album.tracks || []).map((track, index) => {
+    // Ensure artist is always a string
+    const artistName = typeof album.artist === 'string' 
+      ? album.artist 
+      : album.artist?.name || 'Unknown Artist';
+      
+    return {
+      ...track,
+      uniqueId: createUniqueSongId(album._id, track._id),
+      artist: artistName,
+      cover: album.cover,
+      actualDuration: durationToSeconds(track.duration),
+      albumTitle: album.title || 'Unknown Album',
+      albumId: album._id
+    };
+  });
 
   const totalDuration = formatTotalDuration(
     albumTracks.reduce((total, track) => total + track.actualDuration, 0)

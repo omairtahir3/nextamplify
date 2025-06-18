@@ -14,8 +14,18 @@ function getPrimaryArtist(artistString) {
 
 // Helper function to convert duration string to seconds
 const convertDurationToSeconds = (duration) => {
-  const [mins, secs] = duration.split(':').map(Number);
-  return mins * 60 + secs;
+  if (!duration) return 0; 
+  
+  if (typeof duration === 'number') return duration;
+  
+  // Handle string format (MM:SS)
+  const parts = duration.toString().split(':');
+  if (parts.length === 2) {
+    const [mins, secs] = parts.map(Number);
+    return mins * 60 + secs;
+  }
+  
+  return 0; 
 };
 
 // Format time (seconds to MM:SS)
@@ -37,82 +47,141 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [albums, setAlbums] = useState([]);
+  const [artists, setArtists] = useState([]);
+  const [tracks, setTracks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const audioRef = useRef(null);
-
-  // Fetch all albums from API
-  const fetchAllAlbums = useCallback(async () => {
-    try {
-      const response = await fetch('/api/albums');
-      if (!response.ok) throw new Error('Failed to fetch albums');
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching albums:', error);
-      setError(error.message);
-      return [];
-    }
+  
+  // Fetch albums, artists, and tracks data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // First, fetch albums and artists
+        const [albumsRes, artistsRes] = await Promise.all([
+          fetch('/api/albums').then(res => {
+            if (!res.ok) throw new Error(`Albums API error: ${res.status}`);
+            return res.json();
+          }),
+          fetch('/api/artists').then(res => {
+            if (!res.ok) throw new Error(`Artists API error: ${res.status}`);
+            return res.json();
+          })
+        ]);
+        
+        console.log('Fetched albums:', albumsRes);
+        console.log('Fetched artists:', artistsRes);
+        
+        setAlbums(albumsRes || []);
+        setArtists(artistsRes || []);
+        
+        // Now fetch tracks for each album
+        const allTracks = [];
+        
+        if (albumsRes && albumsRes.length > 0) {
+          for (const album of albumsRes) {
+            try {
+              const tracksRes = await fetch(`/api/tracks?albumId=${album._id}`);
+              if (tracksRes.ok) {
+                const albumTracks = await tracksRes.json();
+                
+                // Debug: Check album data
+                console.log('Album data:', album);
+                if (typeof album.artist === 'object') {
+                  console.error('Album artist is an object!', album.artist);
+                }
+                
+                // Enhance tracks with album and artist information
+                const enhancedTracks = albumTracks.map(track => {
+                  // Handle case where album.artist might be an object instead of a string
+                  let artistName = 'Unknown Artist';
+                  if (typeof album.artist === 'string') {
+                    artistName = album.artist;
+                  } else if (typeof album.artist === 'object' && album.artist && album.artist.name) {
+                    artistName = album.artist.name;
+                  } else if (typeof track.artist === 'string') {
+                    artistName = track.artist;
+                  } else if (typeof track.artist === 'object' && track.artist && track.artist.name) {
+                    artistName = track.artist.name;
+                  }
+                  
+                  const enhancedTrack = {
+                    ...track,
+                    artist: String(artistName),
+                    actualDuration: convertDurationToSeconds(track.duration),
+                    cover: album.cover || track.cover || '/default-cover.jpg',
+                    album: String(album.title || album.name || 'Unknown Album'),
+                    albumId: album._id
+                  };
+                  
+                  return enhancedTrack;
+                });
+                
+                allTracks.push(...enhancedTracks);
+              }
+            } catch (trackError) {
+              console.error(`Error fetching tracks for album ${album._id}:`, trackError);
+            }
+          }
+        }
+        
+        console.log('All tracks fetched:', allTracks);
+        setTracks(allTracks);
+        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
   }, []);
 
-  // Fetch all artists from API
-  const fetchAllArtists = useCallback(async () => {
-    try {
-      const response = await fetch('/api/artists');
-      if (!response.ok) throw new Error('Failed to fetch artists');
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching artists:', error);
-      return [];
-    }
-  }, []);
-
-  // Get all tracks from API data
-  const fetchAllTracks = useCallback(async () => {
-    try {
-      const albums = await fetchAllAlbums();
-      return albums.flatMap(album => 
-        (album.tracks || []).map(track => ({
-          ...track,
-          id: track._id || track.id,
-          artist: album.artist?.name || 'Unknown Artist',
-          actualDuration: convertDurationToSeconds(track.duration),
-          cover: album.cover || '/default-album-cover.png',
-          albumTitle: album.title
-        }))
-      );
-    } catch (error) {
-      console.error('Error processing tracks:', error);
-      return [];
-    }
-  }, [fetchAllAlbums]);
+  // Get all playable tracks
+  const allTracks = useMemo(() => {
+    // Filter tracks that have audioUrl
+    const playableTracks = tracks.filter(track => track.audioUrl);
+    console.log('Playable tracks:', playableTracks);
+    return playableTracks;
+  }, [tracks]);
 
   // Add to recently played list
   const addToRecentlyPlayed = useCallback((track) => {
     setRecentlyPlayed(prev => {
       const normalizedTrack = {
-        id: track.id,
+        id: track._id || track.id,
         cover: track.cover,
         title: track.title,
         artist: track.artist,
         duration: track.duration,
         actualDuration: track.actualDuration,
-        albumTitle: track.albumTitle
+        audioUrl: track.audioUrl,
+        album: track.album,
+        albumId: track.albumId
       };
       
+      // Remove duplicate if exists and add to beginning
       return [
         normalizedTrack,
-        ...prev.filter(t => t.id !== normalizedTrack.id)
+        ...prev.filter(t => (t.id || t._id) !== (normalizedTrack.id || normalizedTrack._id))
       ].slice(0, 8);
     });
   }, []);
 
   // Function to play a specific track
-  const playTrack = useCallback((track, addToHistory = true, autoPlay = false) => {
-    if (!track?.audioUrl) {
-      console.error('Invalid track data:', track);
+  const playTrack = useCallback((track, addToHistory, autoPlay = false) => {
+    if (!track || !track.audioUrl) {
+      console.error('Cannot play track: missing audioUrl', track);
       return;
     }
 
+    // Add current track to history and recently played before switching
     if (currentTrack && addToHistory) {
       addToRecentlyPlayed(currentTrack);
       setPlaybackHistory(prev => [...prev, currentTrack]);
@@ -122,11 +191,13 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
     setProgress(0);
     setCurrentTime('0:00');
     
+    // Load new audio source
     if (audioRef.current) {
       audioRef.current.src = track.audioUrl;
       audioRef.current.load();
       audioRef.current.volume = isMuted ? 0 : volume;
       
+      // Only autoplay if allowed by browser policy
       if (autoPlay && hasUserInteracted) {
         audioRef.current.play().then(() => {
           setIsPlaying(true);
@@ -139,78 +210,241 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
       }
     }
     
-    setQueue(prev => prev.filter(t => t.id !== track.id));
+    // Remove the track from queue if it's there
+    setQueue(prev => prev.filter(t => (t._id || t.id) !== (track._id || track.id)));
   }, [currentTrack, addToRecentlyPlayed, volume, isMuted, hasUserInteracted]);
 
-  // Initialize with data from API
+  // Initialize with a random track when data is loaded
   useEffect(() => {
-    const initializePlayer = async () => {
-      setIsLoading(true);
-      setError(null);
+    if (allTracks.length > 0 && !currentTrack && !isLoading) {
+      console.log('Initializing with random track from:', allTracks.length, 'tracks');
       
-      try {
-        const tracks = await fetchAllTracks();
-        const artists = await fetchAllArtists();
+      if (allTracks.length === 0) {
+        console.error('No playable tracks found (missing audioUrl)');
+        setError('No playable tracks found. Please check that tracks have valid audio URLs.');
+        return;
+      }
+      
+      const randomIndex = Math.floor(Math.random() * allTracks.length);
+      const firstTrack = allTracks[randomIndex];
+      
+      // Set initial queue (3 random tracks excluding the first track)
+      const exclude = [firstTrack];
+      const initialQueue = allTracks
+        .filter(track => !exclude.some(e => (e._id || e.id) === (track._id || track.id)))
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+      
+      setQueue(initialQueue);
+      playTrack(firstTrack, false, true);
+    }
+  }, [allTracks, currentTrack, playTrack, isLoading]);
 
-        if (tracks.length > 0) {
-          const randomIndex = Math.floor(Math.random() * tracks.length);
-          const firstTrack = tracks[randomIndex];
-          
-          const initialQueue = tracks
-            .filter(track => track.id !== firstTrack.id)
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 3);
-          
-          setQueue(initialQueue);
-          playTrack(firstTrack, false, true);
-        }
-      } catch (error) {
-        console.error('Initialization error:', error);
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
+  // Get artist data for current track
+  const artistData = useMemo(() => {
+    if (!currentTrack) return null;
+    
+    const primaryArtistName = getPrimaryArtist(currentTrack.artist);
+    const artist = artists.find(a => a.name === primaryArtistName);
+    
+    return artist ? {
+      image: artist.image || currentTrack.cover || '/default-cover.jpg',
+      name: String(artist.name || 'Unknown Artist'),
+      followers: artist.followers ? `${artist.followers} followers` : '',
+      bio: String(artist.description || artist.bio || 'Artist information not available')
+    } : {
+      image: currentTrack.cover || '/default-cover.jpg',
+      name: String(currentTrack.artist || 'Unknown Artist'),
+      followers: '',
+      bio: 'Artist information not available'
+    };
+  }, [currentTrack, artists]);
+
+  // Add new track to queue when a track is removed
+  useEffect(() => {
+    if (queue.length < 3 && currentTrack && allTracks.length > 0) {
+      // Create exclusion list (current track + existing queue + recently played)
+      const exclude = [
+        currentTrack,
+        ...queue,
+        ...recentlyPlayed.slice(0, 5)
+      ];
+      
+      const availableTracks = allTracks.filter(
+        track => track.audioUrl && !exclude.some(e => (e._id || e.id) === (track._id || track.id))
+      );
+      
+      if (availableTracks.length > 0) {
+        const newTrack = availableTracks[Math.floor(Math.random() * availableTracks.length)];
+        setQueue(prev => [...prev, newTrack]);
+      }
+    }
+  }, [queue, currentTrack, recentlyPlayed, allTracks]);
+
+  // Play next song
+  const playNextSong = useCallback(() => {
+    if (queue.length === 0) return;
+    
+    // Play the first track in the queue
+    playTrack(queue[0], true, true);
+  }, [queue, playTrack]);
+
+  // Play previous song
+  const playPrevSong = useCallback(() => {
+    if (playbackHistory.length === 0) return;
+    
+    // Get last played track from history
+    const prevTrack = playbackHistory[playbackHistory.length - 1];
+    
+    // Add current track to recently played but not to history (since we're going back)
+    if (currentTrack) {
+      addToRecentlyPlayed(currentTrack);
+    }
+    
+    // Play previous track without adding to history
+    playTrack(prevTrack, false, true);
+    
+    // Update history (remove the track we just played)
+    setPlaybackHistory(prev => prev.slice(0, -1));
+  }, [playbackHistory, currentTrack, playTrack, addToRecentlyPlayed]);
+
+  // Toggle play/pause
+  const togglePlayPause = useCallback(() => {
+    if (!hasUserInteracted) {
+      setHasUserInteracted(true);
+    }
+    
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play().then(() => {
+          setIsPlaying(true);
+        }).catch(error => {
+          console.error("Playback failed:", error);
+          setIsPlaying(false);
+        });
+      }
+    }
+  }, [isPlaying, hasUserInteracted]);
+
+  // Toggle mute
+  const toggleMute = useCallback(() => {
+    const newMuteState = !isMuted;
+    setIsMuted(newMuteState);
+    
+    if (audioRef.current) {
+      audioRef.current.volume = newMuteState ? 0 : volume;
+    }
+  }, [isMuted, volume]);
+
+  // Handle volume change
+  const handleVolumeChange = useCallback((e) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+      
+      // Unmute if we're changing volume from 0
+      if (isMuted && newVolume > 0) {
+        setIsMuted(false);
+      }
+    }
+  }, [isMuted]);
+
+  // Handle click on recently played track
+  const handleRecentlyPlayedClick = useCallback((track) => {
+    playTrack(track, true, true);
+  }, [playTrack]);
+
+  // Handle audio events
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleTimeUpdate = () => {
+      const current = audio.currentTime;
+      const duration = audio.duration || currentTrack?.actualDuration || 0;
+      
+      setCurrentTime(formatTime(current));
+      setProgress((current / duration) * 100);
+    };
+
+    const handleLoadedMetadata = () => {
+      setDuration(formatTime(audio.duration));
+    };
+
+    const handleEnded = () => {
+      // When a track ends naturally, it should be added to recently played
+      if (currentTrack) {
+        addToRecentlyPlayed(currentTrack);
+      }
+      playNextSong();
+    };
+
+    const handleError = (e) => {
+      console.error('Audio error:', e);
+      setIsPlaying(false);
+      // Try to play next song on error
+      if (queue.length > 0) {
+        playNextSong();
       }
     };
 
-    initializePlayer();
-  }, [fetchAllTracks, fetchAllArtists, playTrack]);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
 
-  // Get detailed artist data
-  const fetchArtistDetails = useCallback(async (artistName) => {
-    try {
-      const response = await fetch(`/api/artists/${encodeURIComponent(artistName)}`);
-      if (!response.ok) return null;
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching artist details:', error);
-      return null;
-    }
-  }, []);
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+    };
+  }, [currentTrack, playNextSong, addToRecentlyPlayed, queue]);
 
-  // Artist data with potential API fetch
-  const [artistData, setArtistData] = useState(null);
+  // Reset track progress when track changes
   useEffect(() => {
-    if (!currentTrack) return;
+    if (currentTrack) {
+      setDuration(currentTrack.duration);
+      setProgress(0);
+      setCurrentTime('0:00');
+    }
+  }, [currentTrack]);
 
-    const getArtistData = async () => {
-      const primaryArtistName = getPrimaryArtist(currentTrack.artist);
-      const details = await fetchArtistDetails(primaryArtistName);
-      
-      setArtistData({
-        image: details?.image || currentTrack.cover,
-        name: primaryArtistName,
-        followers: details?.followers ? `${details.followers} followers` : '',
-        bio: details?.description || 'Artist information not available'
-      });
+  // Handle playTrack events from other components
+  useEffect(() => {
+    const handlePlayTrack = (e) => {
+      playTrack(e.detail, true, true);
     };
 
-    getArtistData();
-  }, [currentTrack, fetchArtistDetails]);
+    window.addEventListener('playTrack', handlePlayTrack);
+    
+    return () => {
+      window.removeEventListener('playTrack', handlePlayTrack);
+    };
+  }, [playTrack]);
 
-  // ... (keep all your existing player control functions: playNextSong, playPrevSong, etc.)
-  // ... (keep all your existing useEffect hooks for audio events)
-  // ... (keep all your existing UI rendering code)
+  // Handle initial user interaction
+  const handleInitialInteraction = useCallback(() => {
+    if (!hasUserInteracted) {
+      setHasUserInteracted(true);
+      
+      // Try to play current track if it's not playing
+      if (audioRef.current && !isPlaying && currentTrack) {
+        audioRef.current.play().then(() => {
+          setIsPlaying(true);
+        }).catch(error => {
+          console.error("Autoplay failed:", error);
+        });
+      }
+    }
+  }, [hasUserInteracted, isPlaying, currentTrack]);
 
+  // Loading state
   if (isLoading) {
     return (
       <section className="now-playing-section">
@@ -222,11 +456,13 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
     );
   }
 
+  // Error state
   if (error) {
     return (
       <section className="now-playing-section">
         <div className="error-container">
-          <p>Error: {error}</p>
+          <h3>Unable to load music</h3>
+          <p>{error}</p>
           <button onClick={() => window.location.reload()}>
             Try Again
           </button>
@@ -235,8 +471,33 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
     );
   }
 
+  // No tracks available
+  if (!currentTrack && allTracks.length === 0) {
+    return (
+      <section className="now-playing-section">
+        <div className="empty-container">
+          <h3>No tracks available</h3>
+          <p>Add some music to your library to start playing.</p>
+        </div>
+      </section>
+    );
+  }
+
+  // No current track but tracks are available
+  if (!currentTrack) {
+    return (
+      <section className="now-playing-section">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Preparing your music...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <div className="now-playing-container" onClick={() => setHasUserInteracted(true)}>
+    <div className="now-playing-container" onClick={handleInitialInteraction}>
+      {/* Hidden audio element */}
       <audio ref={audioRef} crossOrigin="anonymous" />
       
       <section className="now-playing-section">
@@ -253,10 +514,10 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
           </div>
           
           <div className="now-playing-info">
-            <h3 className="song-title">{currentTrack.title}</h3>
-            <p className="artist-section-name">{currentTrack.artist}</p>
+            <h3 className="song-title">{String(currentTrack.title || 'Unknown Title')}</h3>
+            <p className="artist-section-name">{String(currentTrack.artist || 'Unknown Artist')}</p>
             {currentTrack.album && (
-              <p className="credits">Album: {currentTrack.album}</p>
+              <p className="credits">Album: {String(currentTrack.album)}</p>
             )}
           
             <div className="sidebar-controls">
@@ -286,13 +547,35 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
           <div className="queue-section">
             <h3>Next in Queue</h3>
             <ul className="queue-list">
-              {queue.map((track) => (
-                <QueueItem 
-                  key={track.id} 
-                  track={track} 
-                  onClick={() => playTrack(track, true, true)}
-                />
-              ))}
+              {queue.map((track) => {
+                
+                // Ensure we have valid track data
+                if (!track || typeof track !== 'object') {
+                  return null;
+                }
+                
+                // Create a safe track object with only the needed properties
+                const safeTrack = {
+                  _id: track._id || track.id,
+                  id: track.id || track._id,
+                  title: String(track.title || 'Unknown Title'),
+                  artist: String(track.artist || 'Unknown Artist'),
+                  album: track.album ? String(track.album) : undefined,
+                  cover: track.cover || '/default-cover.jpg',
+                  duration: track.duration,
+                  actualDuration: track.actualDuration,
+                  audioUrl: track.audioUrl,
+                  albumId: track.albumId
+                };
+                
+                return (
+                  <QueueItem 
+                    key={safeTrack._id || safeTrack.id} 
+                    track={safeTrack} 
+                    onClick={() => playTrack(track, true, true)}
+                  />
+                );
+              })}
             </ul>
           </div>
         </div>
@@ -307,8 +590,8 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
               className="track-cover"
             />
             <div>
-              <p className="song-title">{currentTrack.title}</p>
-              <p className="song-artist">{currentTrack.artist}</p>
+              <p className="song-title">{String(currentTrack.title || 'Unknown Title')}</p>
+              <p className="song-artist">{String(currentTrack.artist || 'Unknown Artist')}</p>
             </div>
           </div>
 

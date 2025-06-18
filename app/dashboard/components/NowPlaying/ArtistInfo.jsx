@@ -1,26 +1,52 @@
-'use client';
+'use client'; 
+
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function ArtistInfo({ artist }) {
+  const router = useRouter();
+
+  if (!artist) return null;
+
+  const handleArtistClick = () => {
+    if (artist._id || artist.id) {
+      router.push(`/dashboard/artists/${artist._id || artist.id}`);
+    }
+  };
+
   return (
-    <div className="artist-section">
-      <div className="artist-info">
-        <Image
-          src={artist.image}
-          alt={artist.name}
-          width={150}
-          height={150}
-          className="artist-section-image"
-        />
-        <div className="artist-stats">
-          <h2>{artist.name}</h2>
-          <p>{artist.listeners}</p>
-          <p>{artist.followers}</p>
+    <div className="artist-info">
+      <div className="artist-image-container">
+        <div 
+          className="artist-image-wrapper"
+          onClick={handleArtistClick}
+          style={{ cursor: 'pointer' }}
+        >
+          <Image
+            src={artist.image || '/default-artist.jpg'}
+            alt={artist.name || 'Artist'}
+            width={100}
+            height={100}
+            className="artist-image"
+          />
         </div>
       </div>
-      <div className="artist-bio">
-        <h3>About</h3>
-        <p>{artist.bio}</p>
+      <div className="artist-details">
+        <h4 className="artist-name">{artist.name || 'Unknown Artist'}</h4>
+        {artist.bio && (
+          <p className="artist-bio">{artist.bio}</p>
+        )}
+        {artist.genres?.length > 0 && (
+          <div className="artist-genres">
+            <span>Genres: </span>
+            {artist.genres.map((genre, index) => (
+              <span key={index}>
+                {genre}
+                {index < artist.genres.length - 1 ? ', ' : ''}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
