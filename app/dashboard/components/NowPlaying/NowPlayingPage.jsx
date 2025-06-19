@@ -91,10 +91,6 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
                 
                 // Debug: Check album data
                 console.log('Album data:', album);
-                if (typeof album.artist === 'object') {
-                  console.error('Album artist is an object!', album.artist);
-                }
-                
                 // Enhance tracks with album and artist information
                 const enhancedTracks = albumTracks.map(track => {
                   // Handle case where album.artist might be an object instead of a string
