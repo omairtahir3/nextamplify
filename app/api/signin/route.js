@@ -33,7 +33,7 @@ export async function POST(req) {
       name: 'token',
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Changed from process.env.NODE_ENV === 'production' to allow cookies over HTTP (EC2 IP)
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
