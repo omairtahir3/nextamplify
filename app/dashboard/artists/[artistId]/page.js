@@ -4,7 +4,7 @@ import { useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import NowPlayingPage from '../../components/NowPlaying/NowPlayingPage';
+
 import Sidebar from '../../components/Sidebar';
 
 export default function ArtistPage({ params }) {
@@ -193,7 +193,7 @@ export default function ArtistPage({ params }) {
         )}
       </div>
 
-      <NowPlayingPage showRecentlyPlayed={false} />
+
     </div>
   );
 }

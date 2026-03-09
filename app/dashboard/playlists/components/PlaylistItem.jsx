@@ -5,9 +5,9 @@ import Image from 'next/image';
 export default function PlaylistItem({ playlist, onDelete }) {
   return (
     <div className="playlist-card">
-      <Link href={`/dashboard/playlists/${playlist.id}`}>
+      <Link href={`/dashboard/playlists/${playlist._id || playlist.id}`}>
         <div className="playlist-image">
-          {playlist.songs.length > 0 ? (
+          {playlist.songs && playlist.songs.length > 0 && playlist.songs[0]?.cover ? (
             <Image
               src={playlist.songs[0].cover}
               alt={playlist.name}
@@ -28,7 +28,7 @@ export default function PlaylistItem({ playlist, onDelete }) {
       </Link>
       <button 
         className="delete-playlist-btn"
-        onClick={() => onDelete(playlist.id)}
+        onClick={() => onDelete(playlist._id || playlist.id)}
         aria-label={`Delete playlist ${playlist.name}`}
       >
         <i className="fas fa-trash"></i>

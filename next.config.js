@@ -63,6 +63,11 @@ module.exports = {
         hostname: '*.gstatic.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'is1-ssl.mzstatic.com',
+        pathname: '/**',
+      },
       
     ],
   }

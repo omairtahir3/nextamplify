@@ -177,11 +177,13 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
       return;
     }
 
-    // Add current track to history and recently played before switching
+    // Add current track to history before switching
     if (currentTrack && addToHistory) {
-      addToRecentlyPlayed(currentTrack);
       setPlaybackHistory(prev => [...prev, currentTrack]);
     }
+    
+    // Immediately add the exact track being played to recently played
+    addToRecentlyPlayed(track);
     
     setCurrentTrack(track);
     setProgress(0);
@@ -293,11 +295,6 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
     // Get last played track from history
     const prevTrack = playbackHistory[playbackHistory.length - 1];
     
-    // Add current track to recently played but not to history (since we're going back)
-    if (currentTrack) {
-      addToRecentlyPlayed(currentTrack);
-    }
-    
     // Play previous track without adding to history
     playTrack(prevTrack, false, true);
     
@@ -374,10 +371,7 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
     };
 
     const handleEnded = () => {
-      // When a track ends naturally, it should be added to recently played
-      if (currentTrack) {
-        addToRecentlyPlayed(currentTrack);
-      }
+      // When a track ends naturally, step forward
       playNextSong();
     };
 
@@ -424,6 +418,19 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
       window.removeEventListener('playTrack', handlePlayTrack);
     };
   }, [playTrack]);
+
+  // Sync recentlyPlayed state globally
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('recentlyPlayedUpdated', { detail: recentlyPlayed }));
+  }, [recentlyPlayed]);
+
+  useEffect(() => {
+    const handleRequest = () => {
+      window.dispatchEvent(new CustomEvent('recentlyPlayedUpdated', { detail: recentlyPlayed }));
+    };
+    window.addEventListener('requestRecentlyPlayed', handleRequest);
+    return () => window.removeEventListener('requestRecentlyPlayed', handleRequest);
+  }, [recentlyPlayed]);
 
   // Handle initial user interaction
   const handleInitialInteraction = useCallback(() => {
@@ -640,13 +647,6 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
           </div>
         </div>
       </section>
-      
-      {showRecentlyPlayed && (
-        <RecentlyPlayed 
-          recentlyPlayed={recentlyPlayed} 
-          onTrackClick={handleRecentlyPlayedClick} 
-        />
-      )}
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useEffect, useState, use } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import Sidebar from '../../components/Sidebar';
-import NowPlayingPage from '../../components/NowPlaying/NowPlayingPage';
+
 
 // Converts "mm:ss" to total seconds
 const durationToSeconds = (duration) => {
@@ -260,7 +260,7 @@ export default function AlbumPage({ params}) {
         </div>
       )}
 
-      <NowPlayingPage showRecentlyPlayed={false} />
+
     </div>
   );
 }

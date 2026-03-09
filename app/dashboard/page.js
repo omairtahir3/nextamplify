@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import NowPlayingPage from './components/NowPlaying/NowPlayingPage';
+
 import Sidebar from './components/Sidebar';
+import RecentlyPlayedContainer from './components/NowPlaying/RecentlyPlayedContainer';
 
 // Helper function to safely get artist name
 function getArtistName(artist) {
@@ -95,8 +96,8 @@ export default function DashboardPage() {
       <main className="main">
         <h1 className="welcome-heading">Welcome!</h1>
         
-        <NowPlayingPage showRecentlyPlayed={true} />
-      
+
+        <RecentlyPlayedContainer />
         <section className="section">
           <h2 className="section-heading">More Albums</h2>
           <div className="card-grid small-cards">

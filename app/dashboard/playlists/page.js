@@ -3,15 +3,20 @@ import { useState } from 'react';
 import { usePlaylists } from './PlaylistsContext';
 import PlaylistForm from './components/PlaylistForm';
 import PlaylistItem from './components/PlaylistItem';
-import NowPlayingPage from '../components/NowPlaying/NowPlayingPage'; // Adjust path as needed
+
 
 export default function PlaylistsPage() {
   const { playlists, createPlaylist, deletePlaylist } = usePlaylists();
   const [showForm, setShowForm] = useState(false);
 
-  const handleCreatePlaylist = (name) => {
-    createPlaylist(name);
-    setShowForm(false);
+  const handleCreatePlaylist = async (name) => {
+    try {
+      await createPlaylist(name);
+      setShowForm(false);
+    } catch (err) {
+      console.error('Error creating playlist:', err);
+      alert(err.message || 'Failed to create playlist');
+    }
   };
 
   return (
@@ -46,9 +51,9 @@ export default function PlaylistsPage() {
           </div>
         ) : (
           <div className="playlists-grid">
-            {playlists.map(playlist => (
+            {playlists.map((playlist, index) => (
               <PlaylistItem
-                key={playlist.id}
+                key={playlist._id || playlist.id || `playlist-${index}`}
                 playlist={playlist}
                 onDelete={deletePlaylist}
               />
@@ -56,7 +61,7 @@ export default function PlaylistsPage() {
           </div>
         )}
       </div>
-        <NowPlayingPage showRecentlyPlayed={false} />
+
     </div>
   );
 }

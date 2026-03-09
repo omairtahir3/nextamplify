@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { usePlaylists } from '../PlaylistsContext';
 import SongItem from '../components/SongItem';
 import { useEffect, useMemo, useState, use } from 'react';
-import NowPlayingPage from '../../components/NowPlaying/NowPlayingPage';
+
 
 const convertDurationToSeconds = (duration) => {
   if (!duration) return 0;
@@ -184,37 +184,17 @@ export default function PlaylistDetailPage({ params }) {
   // Handle adding song to playlist with better error handling
   const handleAddSongToPlaylist = async (song) => {
     try {
-      // For localStorage playlists, use playlist.id (not _id)
-      if (!playlist?.id) {
-        console.error('Playlist object:', playlist);
+      const pid = playlist?._id || playlist?.id;
+      if (!pid) {
         throw new Error('Playlist ID is missing');
       }
       
-      if (!song?.id) {
+      const songId = song._id || song.id;
+      if (!songId) {
         throw new Error('Song ID is missing');
       }
 
-      // Create a clean song object with all required fields
-      const songToAdd = {
-        id: song.id,
-        uniqueId: song.uniqueId || song.id,
-        title: song.title || 'Unknown Title',
-        artist: song.artist || 'Unknown Artist',
-        artistId: song.artistId, // Include artist ID if available
-        duration: song.duration || '0:00',
-        actualDuration: song.actualDuration || 0,
-        cover: song.cover || '/default-cover.jpg',
-        album: song.albumTitle || song.album || 'Unknown Album',
-        albumId: song.albumId,
-        audioUrl: song.audioUrl
-      };
-
-      console.log('Adding song to playlist:', {
-        playlistId: playlist.id,
-        song: songToAdd
-      });
-
-      addSongToPlaylist(playlist.id, songToAdd);
+      await addSongToPlaylist(pid, song);
     } catch (error) {
       console.error('Error adding song to playlist:', error);
       alert(`Failed to add song: ${error.message}`);
@@ -288,7 +268,7 @@ export default function PlaylistDetailPage({ params }) {
                       }}
                       onAction={(e) => {
                         e.stopPropagation();
-                        removeSongFromPlaylist(playlist.id, song.id);
+                        removeSongFromPlaylist(playlist._id || playlist.id, song._id || song.id);
                       }}
                       actionLabel={minusIcon}
                       actionClass="remove-btn"
@@ -325,7 +305,7 @@ export default function PlaylistDetailPage({ params }) {
           )}
         </div>
       </div>
-      <NowPlayingPage showRecentlyPlayed={false} />
+
     </div>
   );
 }

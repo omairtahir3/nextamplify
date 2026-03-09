@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import NowPlayingPage from '../components/NowPlaying/NowPlayingPage';
+
 import Sidebar from '../components/Sidebar';
 
 export default function AlbumsPage() {
@@ -102,7 +102,7 @@ export default function AlbumsPage() {
           </div>
         )}
       </div>
-      <NowPlayingPage showRecentlyPlayed={false} />
+
     </div>
   );
 }

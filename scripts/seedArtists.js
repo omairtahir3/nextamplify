@@ -2,7 +2,7 @@
 import { MongoClient } from 'mongodb';
 import { artists } from '../app/dashboard/artists/data/artists.js';
 
-const uri = 'mongodb://localhost:27017';
+const uri = 'mongodb://localhost:27015';
 const client = new MongoClient(uri);
 const dbName = 'amplifyDB';
 

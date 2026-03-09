@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import NowPlayingPage from '../components/NowPlaying/NowPlayingPage';
+
 import Sidebar from '../components/Sidebar';
 
 export default function ArtistsPage() {
@@ -31,7 +31,7 @@ export default function ArtistsPage() {
   );
   console.log(artists);
   return (
-    <div className="dashboard-container">
+    <div className="main-wrapper">
       <Sidebar />
       <div className="artists-container">
         <div className="artists-header">
@@ -82,7 +82,7 @@ export default function ArtistsPage() {
         )}
       </div>
 
-      <NowPlayingPage showRecentlyPlayed={false} />
+
     </div>
   );
 }
