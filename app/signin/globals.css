@@ -1,3 +1,7 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 .signin-body {
     background-color: #000000;
     color: white;
@@ -5,10 +9,7 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 140vh;
-    margin-top:5rem;
+    min-height: 100vh;
 }
 
 .signin-section {
@@ -16,17 +17,18 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin: 10rem;
+    min-height: 100vh;
+    padding: 2rem 1rem;
 }
 
 .signin-container {
     background-color: #363636;
-    padding: 2rem;
+    padding: 2.5rem;
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 40%;
-    height: 95%;
+    width: 440px;
+    max-width: 95%;
 }
 
 .signin-container img{
@@ -168,3 +170,47 @@ body::-webkit-scrollbar-thumb {
 }
 
 
+@media (max-width: 480px) {
+    .signin-section {
+        padding: 1rem;
+    }
+
+    .signin-container {
+        padding: 2rem 1.2rem;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .signin-container h2 {
+        font-size: 1.5rem;
+        margin: 10px auto 1.4rem;
+    }
+
+    .social-login {
+        width: 100%;
+        max-width: 100%;
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    .signin-form {
+        width: 100%;
+        margin: 15px 0;
+    }
+
+    .signin-form label {
+        width: 100%;
+    }
+
+    .signin-form input {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .signin-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+}
