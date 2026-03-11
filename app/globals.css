@@ -13,6 +13,7 @@ body {
   color: white;
   font-family: 'Poppins', sans-serif;
   margin: 0;
+  overflow-x: hidden;
 }
 
 .container {
@@ -38,6 +39,7 @@ body {
   justify-content: space-between;
   margin-left: 10px;
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 .navbar img {
@@ -144,6 +146,7 @@ body {
   padding: 5rem 0;
   margin: 70px;
   z-index: 1;
+  overflow: hidden;
 }
 
 .hero-background {
@@ -308,6 +311,8 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
   gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card {
@@ -400,7 +405,11 @@ body::-webkit-scrollbar-thumb {
   .navbar {
     flex-wrap: wrap;
     height: auto;
-    padding: 10px;
+    padding: 10px 15px;
+    width: calc(100% - 20px);
+    margin-left: 10px;
+    border-radius: 30px;
+    box-sizing: border-box;
   }
 
   .nav-center {
@@ -419,15 +428,128 @@ body::-webkit-scrollbar-thumb {
   .auth-buttons {
     order: 1;
     margin-left: auto;
+    gap: 8px;
+  }
+
+  .sign-in,
+  .sign-up {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .hero {
+    margin: 70px 15px 30px;
+    padding: 3rem 0;
   }
 
   .hero h2 {
-    font-size: 3rem;
-    margin: 2rem;
+    font-size: 2.2rem;
+    margin: 1.5rem 0.5rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    padding: 0 1rem;
+  }
+
+  .premium-btn {
+    width: auto;
+    max-width: 80%;
+    margin: 15px auto;
   }
 
   .main-section {
-    margin: 10rem 2rem 5rem;
+    margin: 3rem auto;
+    width: 92%;
+  }
+
+  .section {
+    margin: 2.5rem auto;
+    padding: 0.5rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .card {
+    padding: 0.6rem;
+  }
+
+  .card h4 {
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card p {
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .heading h3 {
+    font-size: 1.1rem;
+  }
+
+  .heading a {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 8px 12px;
+    border-radius: 25px;
+    width: calc(100% - 16px);
+    margin-left: 8px;
+  }
+
+  .navbar img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .navbar h1 {
+    font-size: 1.2rem;
+    margin: 0 5px;
+  }
+
+  .sign-in,
+  .sign-up {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  .hero {
+    margin: 70px 10px 20px;
+    padding: 2.5rem 0;
+  }
+
+  .hero h2 {
+    font-size: 1.8rem;
+    margin: 1rem 0.5rem;
+  }
+
+  .main-section {
+    margin: 2rem auto;
+    width: 95%;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+
+  .card {
+    padding: 0.5rem;
+  }
+
+  .section {
+    margin: 2rem auto;
   }
 }
 
