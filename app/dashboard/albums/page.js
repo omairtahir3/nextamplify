@@ -2,8 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-import Sidebar from '../components/Sidebar';
+import './globals.css';
 
 export default function AlbumsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,10 +33,8 @@ export default function AlbumsPage() {
   );
 
   return (
-    <div className="dashboard-container">
-      <Sidebar />
-      <div className="albums-container">
-        <div className="albums-header">
+    <div className="albums-container">
+      <div className="albums-header">
           <h1 className="text-3xl font-bold">Albums</h1>
           <div className="search-container">
             <input
@@ -100,9 +97,7 @@ export default function AlbumsPage() {
               </Link>
             ))}
           </div>
-        )}
-      </div>
-
+      )}
     </div>
   );
 }

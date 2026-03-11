@@ -6,7 +6,7 @@ export default function RecentlyPlayed({ recentlyPlayed, onTrackClick }) {
     <section className="section">
       <h2 className="section-heading">Recently Played</h2>
       <div className="card-grid">
-        {recentlyPlayed.map((track) => (
+        {recentlyPlayed.slice(0, 8).map((track) => (
           <div 
             key={track.id} 
             className="music-card"

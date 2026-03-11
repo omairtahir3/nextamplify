@@ -52,6 +52,7 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
   const [tracks, setTracks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const audioRef = useRef(null);
   
   // Fetch albums, artists, and tracks data
@@ -504,8 +505,8 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
       {/* Hidden audio element */}
       <audio ref={audioRef} crossOrigin="anonymous" />
       
-      <section className="now-playing-section">
-        <h2>Now Playing</h2>
+      <section className={`now-playing-section ${isSidebarOpen ? 'open' : ''}`}>
+        <h2 className="sidebar-title-desktop" style={{ textAlign: "center", marginBottom: "20px" }}>Now Playing</h2>
         <div className="now-playing-track">
           <div className="album-art-container">
             <Image
@@ -584,69 +585,77 @@ export default function NowPlayingPage({ showRecentlyPlayed, initialQueue = [] }
           </div>
         </div>
 
-        <div className="now-playing-bar">
-          <div className="now-playing-left">
-            <Image
-              src={currentTrack.cover}
-              alt={currentTrack.title}
-              width={56}
-              height={56}
-              className="track-cover"
-            />
-            <div>
-              <p className="song-title">{String(currentTrack.title || 'Unknown Title')}</p>
-              <p className="song-artist">{String(currentTrack.artist || 'Unknown Artist')}</p>
-            </div>
-          </div>
+      </section>
 
-          <div className="now-playing-center">
-            <div className="controls">
-              <button 
-                onClick={playPrevSong}
-                disabled={playbackHistory.length === 0}
-              >
-                <i className="fa-solid fa-backward" />
-              </button>
-              <button className="play-pause" onClick={togglePlayPause}>
-                <i className={`fa-solid fa-${isPlaying ? 'pause' : 'play'}`} />
-              </button>
-              <button 
-                onClick={playNextSong}
-                disabled={queue.length === 0}
-              >
-                <i className="fa-solid fa-forward" />
-              </button>
-            </div>
-            <div className="progress-bar">
-              <span>{currentTime}</span>
-              <div className="bar">
-                <div className="fill" style={{ width: `${progress}%` }} />
-              </div>
-              <span>{currentTrack.duration || formatTime(currentTrack.actualDuration)}</span>
-            </div>
-          </div>
-
-          <div className="now-playing-right">
-            <button 
-              className="mute-btn"
-              onClick={toggleMute}
-              title={isMuted ? "Unmute" : "Mute"}
-            >
-              {isMuted ? '🔇' : volume > 0.5 ? '🔊' : '🔈'}
-            </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="volume-slider"
-              title="Adjust volume"
-            />
+      <div className="now-playing-bar">
+        <div className="now-playing-left">
+          <Image
+            src={currentTrack.cover}
+            alt={currentTrack.title}
+            width={56}
+            height={56}
+            className="track-cover"
+          />
+          <div>
+            <p className="song-title">{String(currentTrack.title || 'Unknown Title')}</p>
+            <p className="song-artist">{String(currentTrack.artist || 'Unknown Artist')}</p>
           </div>
         </div>
-      </section>
+
+        <div className="now-playing-center">
+          <div className="controls">
+            <button 
+              onClick={playPrevSong}
+              disabled={playbackHistory.length === 0}
+            >
+              <i className="fa-solid fa-backward" />
+            </button>
+            <button className="play-pause" onClick={togglePlayPause}>
+              <i className={`fa-solid fa-${isPlaying ? 'pause' : 'play'}`} />
+            </button>
+            <button 
+              onClick={playNextSong}
+              disabled={queue.length === 0}
+            >
+              <i className="fa-solid fa-forward" />
+            </button>
+          </div>
+          <div className="progress-bar">
+            <span>{currentTime}</span>
+            <div className="bar">
+              <div className="fill" style={{ width: `${progress}%` }} />
+            </div>
+            <span>{currentTrack.duration || formatTime(currentTrack.actualDuration)}</span>
+          </div>
+        </div>
+
+        <div className="now-playing-right">
+          <button 
+            className="queue-toggle-btn"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            title="Toggle Queue"
+          >
+            <i className="fas fa-list-ul"></i>
+          </button>
+          <button 
+            className="mute-btn"
+            onClick={toggleMute}
+            title={isMuted ? "Unmute" : "Mute"}
+          >
+            {isMuted ? '🔇' : volume > 0.5 ? '🔊' : '🔈'}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={handleVolumeChange}
+            className="volume-slider"
+            title="Adjust volume"
+          />
+        </div>
+      </div>
     </div>
   );
 }

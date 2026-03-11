@@ -2,6 +2,7 @@
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import Sidebar from './components/Sidebar';
 import NowPlayingPage from './components/NowPlaying/NowPlayingPage';
 const poppins = Poppins({
   weight: ['400', '500', '600'],
@@ -17,6 +18,7 @@ export const metadata = {
 export default function DashboardLayout({ children }) {
   return (
     <div className={`dashboard-body ${poppins.variable}`}>
+      <Sidebar />
       <div className="dashboard-container">
         {children}
         <NowPlayingPage showRecentlyPlayed={true} />

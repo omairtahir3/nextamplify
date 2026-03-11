@@ -1,19 +1,14 @@
-body.album-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #000;
-  color: #fff;
-}
-
 .albums-container {
-  padding: 2rem;
+  padding: 0 2rem;
+  padding-bottom: 90px !important;
+  padding-right: calc(20% + 4rem);
   background: linear-gradient(180deg, #450000 0%, #121212 100%);
-  width: 100%; /* Take full width of parent container */
+  width: 100%;
   box-sizing: border-box;
   overflow: auto;
-  min-height: 100vh;
-  margin-left: -11rem;
-  margin-right: 9rem;
+  min-height: calc(100vh + 1.5rem);
+  margin-top: -1.5rem !important;
+  padding-top: 1rem !important;
 }
 
 .albums-header {
@@ -21,6 +16,7 @@ body.album-body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 .search-container {
@@ -57,14 +53,12 @@ body.album-body {
 
 .albums-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1.5rem;
   background-color: rgba(0, 0, 0, 0.3);
   margin-bottom: 2rem;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: 8px;
-  margin-right: 5rem;
-  margin-bottom: 10rem;
 }
 
 .album-card {
@@ -129,6 +123,10 @@ body.album-body {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 10;
 }
 
 .play-button circle {
@@ -176,8 +174,11 @@ body.album-body {
 @media (max-width: 900px) {
   .albums-container {
     padding: 1rem;
+    padding-top: 6rem !important;
+    min-height: calc(100vh + 1.5rem);
+    padding-bottom: 90px !important;
   }
-  
+
   .albums-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -197,9 +198,47 @@ body.album-body {
   .albums-container {
     padding: 1rem;
   }
-  
+
   .albums-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .album-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+    padding: 0.75rem;
+  }
+
+  .album-image-container {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+    margin-bottom: 0.5rem;
+  }
+
+  .album-info {
+    min-height: auto;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+  }
+
+  .album-title {
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .album-artist {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .play-button {
+    display: none;
   }
 
   .search-container {

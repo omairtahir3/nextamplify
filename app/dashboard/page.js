@@ -2,8 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-
-import Sidebar from './components/Sidebar';
 import RecentlyPlayedContainer from './components/NowPlaying/RecentlyPlayedContainer';
 
 // Helper function to safely get artist name
@@ -37,8 +35,8 @@ export default function DashboardPage() {
           artist: getArtistName(album.artist)
         }));
 
-        // Get 5 random albums
-        const getRandomAlbums = (albums, count = 5) => {
+        // Get 8 random albums to show more in the grid
+        const getRandomAlbums = (albums, count = 8) => {
           const shuffled = [...albums].sort(() => 0.5 - Math.random());
           return shuffled.slice(0, count);
         };
@@ -61,82 +59,72 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="main-wrapper">
-        <Sidebar />
-        <main className="main">
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Loading albums...</p>
-          </div>
-        </main>
-      </div>
+      <main className="main">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading albums...</p>
+        </div>
+      </main>
     );
   }
 
   if (error) {
     return (
-      <div className="main-wrapper">
-        <Sidebar />
-        <main className="main">
-          <div className="error-container">
-            <h3>Error loading albums</h3>
-            <p>{error}</p>
-            <button onClick={() => window.location.reload()}>
-              Try Again
-            </button>
-          </div>
-        </main>
-      </div>
+      <main className="main">
+        <div className="error-container">
+          <h3>Error loading albums</h3>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>
+            Try Again
+          </button>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="main-wrapper">
-      <Sidebar />
-      <main className="main">
-        <h1 className="welcome-heading">Welcome!</h1>
-        
-
-        <RecentlyPlayedContainer />
-        <section className="section">
-          <h2 className="section-heading">More Albums</h2>
-          <div className="card-grid small-cards">
-            {randomAlbums.map((album) => (
-              <div 
-                key={album._id || album.id} 
-                className="music-card clickable-card"
-                onClick={() => handleAlbumClick(album._id || album.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleAlbumClick(album._id || album.id);
-                  }
+    <main className="main">
+      <h1 className="welcome-heading">Welcome!</h1>
+      
+      <RecentlyPlayedContainer />
+      <section className="section">
+        <h2 className="section-heading">More Albums</h2>
+        <div className="card-grid small-cards">
+          {randomAlbums.slice(0, 8).map((album) => (
+            <div 
+              key={album._id || album.id} 
+              className="music-card clickable-card"
+              onClick={() => handleAlbumClick(album._id || album.id)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleAlbumClick(album._id || album.id);
+                }
+              }}
+            >
+              <Image
+                src={album.cover || '/default-album.jpg'}
+                alt={album.title || 'Album cover'}
+                width={150}
+                height={150}
+                className="album-cover"
+                onError={(e) => {
+                  e.target.src = '/default-album.jpg';
                 }}
-              >
-                <Image
-                  src={album.cover || '/default-album.jpg'}
-                  alt={album.title || 'Album cover'}
-                  width={150}
-                  height={150}
-                  className="album-cover"
-                  onError={(e) => {
-                    e.target.src = '/default-album.jpg';
-                  }}
-                />
-                <div className="album-info">
-                  <p className="album-title">{album.title || 'Untitled Album'}</p>
-                  <p className="album-artist">{album.artist}</p>
-                  <p className="album-tracks">
-                    {album.tracks?.length || 0} {album.tracks?.length === 1 ? 'track' : 'tracks'}
-                  </p>
-                </div>
+              />
+              <div className="album-info">
+                <p className="album-title">{album.title || 'Untitled Album'}</p>
+                <p className="album-artist">{album.artist}</p>
+                <p className="album-tracks">
+                  {album.tracks?.length || 0} {album.tracks?.length === 1 ? 'track' : 'tracks'}
+                </p>
               </div>
-            ))}
-          </div>
-        </section>
-      </main>
-    </div>
-  )
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
 }

@@ -2,8 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-import Sidebar from '../components/Sidebar';
+import './globals.css';
 
 export default function ArtistsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,12 +30,10 @@ export default function ArtistsPage() {
   );
   console.log(artists);
   return (
-    <div className="main-wrapper">
-      <Sidebar />
-      <div className="artists-container">
-        <div className="artists-header">
-          <h1 className="text-3xl font-bold">Artists</h1>
-          <div className="search-container">
+    <main className="main artists-container">
+      <div className="artists-header">
+        <h1 className="text-3xl font-bold">Artists</h1>
+        <div className="search-container">
             <input
               type="text"
               className="search-input"
@@ -80,9 +77,6 @@ export default function ArtistsPage() {
             ))}
           </div>
         )}
-      </div>
-
-
-    </div>
+      </main>
   );
 }

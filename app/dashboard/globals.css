@@ -1,15 +1,27 @@
 body.dashboard-body {
-  margin: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   font-family: 'Poppins', sans-serif;
   background-color: #000;
   color: #fff;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* Crucial for padding/widths */
+}
+
 .dashboard-container {
   display: flex;
-  min-height: 12vh;
-  margin-left: 190px; /* Offset for fixed sidebar */
-  width: calc(100% - 220px); /* Adjust width */
+  margin-left: 220px;
+  /* Exact match to sidebar width */
+  width: calc(100% - 220px);
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .logo-container {
@@ -25,21 +37,27 @@ body.dashboard-body {
 
 /* Sidebar */
 .sidebar {
-  width: 160px;
+  width: 220px;
   background-color: #111;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  position: fixed; /* Fixed positioning */
+  position: fixed;
+  /* Fixed positioning */
   top: 0;
   left: 0;
   bottom: 0;
+  z-index: 1000;
 }
 
 .sidebar h2 {
   color: #b80000;
   margin-bottom: 1rem;
+}
+
+.mobile-menu-btn {
+  display: none;
 }
 
 .sidebar .menu {
@@ -69,23 +87,34 @@ body.dashboard-body {
 }
 
 .main {
-  padding: 2rem;
+  padding: 0 2rem;
+  padding-right: calc(20% + 4rem);
+  /* Room for Now Playing */
   overflow-y: auto;
   background: linear-gradient(180deg, #450000 0%, #121212 100%);
-  padding-bottom: 80px;
-  width: calc(100% - 20vw);
-  box-sizing: border-box;
+  padding-bottom: 90px !important;
+  /* Room for Now Playing Bar */
+  width: 100%;
+  min-height: calc(100vh + 1.5rem);
+  margin-top: -1.5rem !important;
+  padding-top: 0 !important;
+  /* Force .main to take ALL available space in the flex container.
+     Prevents .now-playing-container or other siblings from stealing width. */
+  flex: 1;
+  min-width: 0;
 }
 
 .main h1 {
   font-size: 2.5rem;
-  margin-bottom: 1.5rem;
+  margin-top: 1rem !important;
+  margin-bottom: 2rem;
   color: #fff;
   font-weight: 700;
+  padding-top: 1rem !important;
 }
 
 .section {
-  margin-top: 2rem;
+  margin-top: 0 !important;
   background-color: rgba(0, 0, 0, 0.3);
   padding: 1.5rem;
   border-radius: 8px;
@@ -93,6 +122,7 @@ body.dashboard-body {
 
 .section h2 {
   font-size: 1.5rem;
+  margin-top: 0 !important;
   margin-bottom: 1.5rem;
   color: #fff;
   font-weight: 700;
@@ -101,7 +131,7 @@ body.dashboard-body {
 /* Update the card grid */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 
@@ -117,9 +147,10 @@ body.dashboard-body {
 .music-card:hover {
   background-color: #2c2c2c;
   transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  z-index: 50; /* Higher z-index on hover, but still below now-playing bar */
+  z-index: 50;
+  /* Higher z-index on hover, but still below now-playing bar */
 }
 
 .music-card::before {
@@ -127,7 +158,7 @@ body.dashboard-body {
   top: 0;
   left: 0;
   right: 0;
-  height: 4px; 
+  height: 4px;
   width: 13rem;
   background-color: #b80000;
   position: static;
@@ -150,41 +181,58 @@ body.dashboard-body {
   text-overflow: ellipsis;
 }
 
-.album-title, .mix-title, .song-title {
+.album-title,
+.mix-title,
+.song-title {
   font-weight: 600;
   color: #fff;
 }
 
-.album-artist, .mix-description {
+.album-artist,
+.mix-description {
   color: #b3b3b3;
   font-size: 0.75rem;
 }
 
 /* Now Playing Section */
-.now-playing-section {
-  background-color: #121212;
-  padding: 24px;
-  border-left: 1px solid #282828;
-  height: calc(100vh - 80px);
-  overflow-y: auto; 
+.now-playing-container {
   position: fixed;
   top: 0;
-  right: 0; 
+  left: 0;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  z-index: 1200;
+}
+
+.now-playing-section {
+  background-color: #121212;
+  padding: 16px 24px 90px;
+  border-left: 1px solid #282828;
+  height: 100vh;
+  overflow-y: auto;
+  position: fixed;
+  top: 0;
+  right: 0;
   width: 20%;
-  scrollbar-width: none; 
-  -ms-overflow-style: none; 
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   z-index: 200;
 }
 
+.now-playing-section h2.sidebar-title-desktop {
+  margin-top: 0 !important;
+}
+
 .now-playing-track {
-  display: flex; 
+  display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   gap: 2rem;
   max-width: 100%;
 }
 
-.now-playing-album-art{
+.now-playing-album-art {
   width: 150px;
   height: 150px;
   border-radius: 10px;
@@ -230,7 +278,15 @@ body.dashboard-body {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  border: 2px solid #333;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Ensure sidebar artist image fills its circular container */
+.now-playing-section .artist-image {
+  width: 100%;
+  height: 100%;
 }
 
 .artist-name-large {
@@ -319,7 +375,7 @@ body.dashboard-body {
   text-overflow: ellipsis;
 }
 
-.queue-duration{
+.queue-duration {
   display: flex;
   font-size: 0.9rem;
   color: #fff;
@@ -328,6 +384,7 @@ body.dashboard-body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 /* Controls */
 .sidebar-controls {
   display: flex;
@@ -379,7 +436,7 @@ body.dashboard-body {
   align-items: center;
   padding: 0 1rem;
   border-top: 1px solid #333;
-  z-index: 1000;
+  z-index: 1100;
 }
 
 .now-playing-left {
@@ -529,17 +586,88 @@ body.dashboard-body {
   .now-playing-track {
     grid-template-columns: 1fr;
   }
-  
+}
+
+@media (max-width: 1024px) {
+  .now-playing-section {
+    display: none !important;
+    /* Hide fixed right bar completely */
+  }
+
+  .main {
+    padding-right: 2rem;
+    /* Restore normal padding since right bar is gone */
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-container {
+    margin-left: 0;
+    /* Clear sidebar space when mobile menu active */
+    width: 100%;
+  }
+
+  .main {
+    padding: 1rem;
+    padding-top: 6rem !important;
+    min-height: calc(100vh + 1.5rem);
+    /* Room for mobile hamburger */
+    padding-bottom: 90px !important;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    /* Default hide on mobile, assuming user clicks hamburger */
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .now-playing-track {
+    grid-template-columns: 1fr;
+  }
+
   .artist-section {
     grid-column: 1;
     position: static;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 2000;
+    background: #b80000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    backdrop-filter: blur(2px);
   }
 }
 
 @media (max-width: 900px) {
   .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
   }
+
   .music-card img {
     height: 120px;
   }
@@ -547,9 +675,34 @@ body.dashboard-body {
 
 @media (max-width: 600px) {
   .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
+
   .music-card img {
     height: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .now-playing-right {
+    display: none;
+  }
+
+  .progress-bar {
+    display: none;
+  }
+
+  .now-playing-left {
+    width: auto;
+  }
+
+  .now-playing-center {
+    width: auto;
+    flex: 1;
+    align-items: flex-end;
+  }
+
+  .now-playing-bar {
+    padding-right: 1.5rem;
   }
 }

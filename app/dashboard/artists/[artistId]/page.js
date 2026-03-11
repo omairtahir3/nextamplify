@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import './globals.css';
 
 import Sidebar from '../../components/Sidebar';
 
@@ -62,48 +63,44 @@ export default function ArtistPage({ params }) {
   // Handle loading state
   if (loading) {
     return (
-      <div className="artist-detail-content">
-        <Sidebar />
+      <main className="main artist-detail-body">
         <div className="loading-container">
           <p>Loading artist...</p>
         </div>
-      </div>
+      </main>
     );
   }
 
   // Handle error state
   if (error) {
     return (
-      <div className="artist-detail-content">
-        <Sidebar />
+      <main className="main artist-detail-body">
         <div className="error-container">
           <p>Error: {error}</p>
           <button onClick={() => router.push('/dashboard/artists')}>
             Back to Artists
           </button>
         </div>
-      </div>
+      </main>
     );
   }
 
   // Handle no artist found
   if (!artist) {
     return (
-      <div className="artist-detail-content">
-        <Sidebar />
+      <main className="main artist-detail-body">
         <div className="not-found-container">
           <p>Artist not found</p>
           <button onClick={() => router.push('/dashboard/artists')}>
             Back to Artists
           </button>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="artist-detail-content">
-      <Sidebar />
+    <main className="main artist-detail-body">
 
       <div className="artist-detail-header">
         <div className="artist-detail-image-container">
@@ -194,6 +191,6 @@ export default function ArtistPage({ params }) {
       </div>
 
 
-    </div>
+    </main>
   );
 }

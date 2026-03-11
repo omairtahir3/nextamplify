@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { usePlaylists } from './PlaylistsContext';
 import PlaylistForm from './components/PlaylistForm';
 import PlaylistItem from './components/PlaylistItem';
+import './globals.css';
 
 
 export default function PlaylistsPage() {
@@ -15,7 +16,8 @@ export default function PlaylistsPage() {
       setShowForm(false);
     } catch (err) {
       console.error('Error creating playlist:', err);
-      alert(err.message || 'Failed to create playlist');
+      // Let the form handle showing the error
+      throw err;
     }
   };
 

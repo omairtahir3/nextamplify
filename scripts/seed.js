@@ -1,12 +1,9 @@
-// scripts/seed.js
-// Comprehensive seed script for NextAmplify (DYNAMIC LOCAL AUDIO VERSION)
-// Run with: node scripts/seed.js
-
+require('dotenv').config({ path: '.env.local' });
 const fs = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb');
 
-const uri = 'mongodb://127.0.0.1:27015';
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/amplifyDB';
 const dbName = 'amplifyDB';
 
 // ─── ARTISTS DATA ───────────────────────────────────────────────────────────
