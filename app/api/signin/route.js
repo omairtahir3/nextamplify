@@ -27,7 +27,10 @@ export async function POST(req) {
       { expiresIn: '7d' }
     );
 
-    const response = NextResponse.json({ message: 'Login successful' });
+    const response = NextResponse.json({ 
+      message: 'Login successful',
+      token: token // Added for localStorage consistency
+    });
 
     response.cookies.set({
       name: 'token',
@@ -35,6 +38,7 @@ export async function POST(req) {
       httpOnly: true,
       secure: false, // Changed from process.env.NODE_ENV === 'production' to allow cookies over HTTP (EC2 IP)
       path: '/',
+      sameSite: 'lax', // Added for better cross-origin/redirection reliability
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 

@@ -22,10 +22,14 @@ export default function SignInPage() {
     const data = await res.json();
 
     if (res.status === 200) {
-      localStorage.setItem('token', data.token);
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      } else {
+        console.warn('Token not found in response body, relying on cookie.');
+      }
       router.push('/dashboard'); 
     } else {
-      setError(data.message || 'Invalid email or password'); // ❗ show error
+      setError(data.error || data.message || 'Invalid email or password'); 
     }
   };
 
