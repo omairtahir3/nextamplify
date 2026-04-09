@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # ── MongoDB Service ──────────────────────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: nextamplify-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - nextamplify-network
+
+  # ── Next.js Application ─────────────────────────────────────────────────────
+  app:
+    image: ${DOCKERHUB_USERNAME:-local}/nextamplify:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextamplify-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/amplifyDB
+      - JWT_SECRET=${JWT_SECRET:-amplify_super_secret_key_2026_nextjs}
+    depends_on:
+      - mongo
+    networks:
+      - nextamplify-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  nextamplify-network:
+    driver: bridge

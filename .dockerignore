@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.gitignore
+*.md
+.env*
+.ebextensions
+deploy-*.zip
+*.pem
+.DS_Store
+npm-debug.log*
+.vscode
+.idea
+nextamplify/
