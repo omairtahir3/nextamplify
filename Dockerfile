@@ -1,13 +1,13 @@
 # ── Stage 1: Install dependencies ─────────────────────────────────────────────
 FROM node:18-alpine AS deps
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --only=production
+COPY package.json package-lock.json .npmrc ./
+RUN npm ci --omit=dev
 
 # ── Stage 2: Build the Next.js application ───────────────────────────────────
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 COPY . .
 
