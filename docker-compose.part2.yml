@@ -34,6 +34,21 @@ services:
     networks:
       - nextamplify-ci-network
 
+  # ── Selenium Test Runner ──────────────────────────────────────────────────
+  test-runner:
+    build:
+      context: ./selenium-tests
+      dockerfile: Dockerfile
+    container_name: nextamplify-test-runner
+    environment:
+      - TEST_BASE_URL=http://app-ci:8081
+    volumes:
+      - ./test-results:/tests/report
+    depends_on:
+      - app-ci
+    networks:
+      - nextamplify-ci-network
+
 volumes:
   mongo_ci_data:
     driver: local
