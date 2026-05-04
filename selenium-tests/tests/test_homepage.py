@@ -38,7 +38,7 @@ class TestHomePage:
         driver.get(base_url)
         hero = driver.find_element(By.CSS_SELECTOR, "section.hero")
         h2 = hero.find_element(By.TAG_NAME, "h2")
-        assert "Discover" in h2.text or "Favorite" in h2.text
+        assert "discover" in h2.text.lower() or "favorite" in h2.text.lower()
 
     # TC-05: Verify trending songs section exists with cards
     def test_trending_songs_section(self, driver, base_url):
