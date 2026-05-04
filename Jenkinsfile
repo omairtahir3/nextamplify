@@ -23,7 +23,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying containers'
-                sh 'docker compose -f ${COMPOSE_FILE} down || true'
+                sh 'docker compose -f ${COMPOSE_FILE} down --remove-orphans || true'
+                sh 'docker rm -f nextamplify-ci-mongo nextamplify-ci-app 2>/dev/null || true'
                 sh 'docker compose -f ${COMPOSE_FILE} up -d mongo-ci app-ci'
             }
         }
