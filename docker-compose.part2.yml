@@ -28,7 +28,7 @@ services:
       - MONGODB_URI=mongodb://mongo-ci:27017/amplifyDB
       - JWT_SECRET=${JWT_SECRET:-amplify_super_secret_key_2026_nextjs}
       - PORT=8081
-    command: sh -c "npm install && npm run build && npm start -- -p 8081"
+    command: sh -c "npm install && npm run dev -- -p 8081"
     depends_on:
       - mongo-ci
     networks:
